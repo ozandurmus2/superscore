@@ -19,6 +19,7 @@ const navItems = [
 export default function PanelLayout({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isGuest, setIsGuest] = useState(false);
   const pathname = usePathname();
   const supabase = createClient();
 
@@ -28,6 +29,8 @@ export default function PanelLayout({ children }: { children: React.ReactNode })
       if (authUser) {
         const { data } = await supabase.from('users').select('*').eq('id', authUser.id).single();
         if (data) setUser(data as User);
+      } else {
+        setIsGuest(true);
       }
     }
     getUser();
@@ -37,6 +40,25 @@ export default function PanelLayout({ children }: { children: React.ReactNode })
     await supabase.auth.signOut();
     window.location.href = '/';
   };
+
+  // Guest mode - show simplified layout for /panel/sikayet-yaz
+  if (isGuest && pathname === '/panel/sikayet-yaz') {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <div className="bg-white border-b border-gray-200 px-4 h-14 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2">
+            <Shield className="h-6 w-6 text-[#1B1F3B]" />
+            <span className="font-bold text-[#1B1F3B]">Superscore</span>
+          </Link>
+          <div className="flex items-center gap-3">
+            <Link href="/giris" className="text-sm text-gray-600 hover:text-[#1B1F3B]">Giriş Yap</Link>
+            <Link href="/kayit" className="text-sm bg-[#1B1F3B] text-white px-4 py-1.5 rounded-lg hover:bg-[#2a2f5a]">Üye Ol</Link>
+          </div>
+        </div>
+        <div className="p-6 lg:p-8 max-w-4xl mx-auto">{children}</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 flex">

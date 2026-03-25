@@ -80,9 +80,12 @@ function NewComplaintWizard() {
     return () => clearTimeout(timer);
   }, [brandSearch]);
 
-  // Pre-select brand from URL param
+  // Pre-select brand from URL param or auto-submit draft after login
   useEffect(() => {
     const brandSlug = searchParams.get('marka');
+    const isDraft = searchParams.get('draft');
+    const newBrand = searchParams.get('yeni');
+
     if (brandSlug) {
       supabase.from('brands').select('*').eq('slug', brandSlug).single().then(({ data }) => {
         if (data) {
@@ -90,6 +93,37 @@ function NewComplaintWizard() {
           setStep('details');
         }
       });
+    }
+
+    // If user just logged in and has a draft, auto-submit it
+    if (isDraft === 'true') {
+      const draft = localStorage.getItem('superscore_draft_complaint');
+      if (draft) {
+        const draftData = JSON.parse(draft);
+        // Auto-submit the draft
+        (async () => {
+          const { data: { user } } = await supabase.auth.getUser();
+          if (user && draftData.brand_id) {
+            const res = await fetch('/api/complaints', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(draftData),
+            });
+            if (res.ok) {
+              const data = await res.json();
+              localStorage.removeItem('superscore_draft_complaint');
+              router.push(`/panel/sikayetlerim/${data.id}`);
+            }
+          }
+        })();
+      }
+    }
+
+    // Pre-fill new brand name from URL
+    if (newBrand) {
+      setBrandSearch(decodeURIComponent(newBrand));
+      setNewBrandName(decodeURIComponent(newBrand));
+      setShowAddBrand(true);
     }
   }, [searchParams]);
 
@@ -213,17 +247,12 @@ function NewComplaintWizard() {
     await submitComplaint(cleanTitle, cleanDesc, cleanRes);
   }
 
-  // Final submit
+  // Final submit - supports guest mode (saves draft to localStorage → login → auto-submit)
   async function submitComplaint(finalTitle: string, finalDesc: string, finalResolution: string) {
     setSubmitting(true);
     setError('');
 
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user || !selectedBrand) {
-      setError('Giriş yapmanız gerekiyor');
-      setSubmitting(false);
-      return;
-    }
 
     // Build description with marketplace info if applicable
     let fullDescription = finalDesc;
@@ -231,21 +260,38 @@ function NewComplaintWizard() {
       fullDescription = `[Pazaryeri: ${selectedMarketplace || 'Belirtilmemiş'} | Satıcı: ${sellerName}]\n\n${finalDesc}`;
     }
 
+    const complaintData = {
+      brand_id: selectedBrand?.id,
+      title: finalTitle,
+      description: fullDescription,
+      category: selectedResolutionValue || 'other',
+      desired_resolution: finalResolution,
+      order_number: orderNumber || null,
+    };
+
+    // If not logged in, save draft and redirect to login/register
+    if (!user) {
+      localStorage.setItem('superscore_draft_complaint', JSON.stringify(complaintData));
+      setSubmitting(false);
+      router.push('/giris?redirect=/panel/sikayet-yaz&draft=true');
+      return;
+    }
+
+    if (!selectedBrand) {
+      setError('Marka seçmeniz gerekiyor');
+      setSubmitting(false);
+      return;
+    }
+
     const res = await fetch('/api/complaints', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        brand_id: selectedBrand.id,
-        title: finalTitle,
-        description: fullDescription,
-        category: selectedResolutionValue || 'other',
-        desired_resolution: finalResolution,
-        order_number: orderNumber || null,
-      }),
+      body: JSON.stringify(complaintData),
     });
 
     if (res.ok) {
       const data = await res.json();
+      localStorage.removeItem('superscore_draft_complaint');
       router.push(`/panel/sikayetlerim/${data.id}`);
     } else {
       const err = await res.json();

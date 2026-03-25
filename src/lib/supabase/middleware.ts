@@ -31,11 +31,12 @@ export async function updateSession(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname;
 
-  // Protected routes
+  // Protected routes - /panel/sikayet-yaz is allowed without auth (guest complaint flow)
   const protectedPaths = ['/panel', '/marka-panel', '/admin'];
   const isProtected = protectedPaths.some((p) => pathname.startsWith(p));
+  const isGuestAllowed = pathname === '/panel/sikayet-yaz';
 
-  if (isProtected && !user) {
+  if (isProtected && !user && !isGuestAllowed) {
     const url = request.nextUrl.clone();
     url.pathname = '/giris';
     url.searchParams.set('redirect', pathname);

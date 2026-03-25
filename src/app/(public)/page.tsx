@@ -4,9 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { SuperscoreBadge } from '@/components/brand/superscore-badge';
+import { HeroSearch } from '@/components/home/hero-search';
 import { COMPLAINT_STATUS_LABELS, COMPLAINT_STATUS_COLORS } from '@/types';
 import { formatRelativeTime } from '@/lib/utils';
-import { Shield, Search, ArrowRight, PenSquare, MessageSquare, CheckCircle, Star, TrendingUp, Users } from 'lucide-react';
+import { Shield, ArrowRight, PenSquare, MessageSquare, CheckCircle, Star, TrendingUp, Users } from 'lucide-react';
 import type { Brand, Complaint } from '@/types';
 
 export default async function HomePage() {
@@ -39,24 +40,9 @@ export default async function HomePage() {
           <p className="text-lg md:text-xl text-gray-300 mb-10 max-w-2xl mx-auto">
             Türkiye&apos;nin en modern şikayet ve güven platformu. Şikayetinizi yazın, markalar çözsün, herkes kazansın.
           </p>
-          <div className="max-w-xl mx-auto mb-8">
-            <div className="flex gap-2 bg-white rounded-xl p-2">
-              <div className="flex-1 flex items-center gap-2 px-3">
-                <Search className="h-5 w-5 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Marka ara... (örn. Trendyol, Hepsiburada)"
-                  className="w-full py-2 text-gray-800 outline-none text-sm"
-                  readOnly
-                />
-              </div>
-              <Link href="/markalar">
-                <Button size="lg">Ara</Button>
-              </Link>
-            </div>
-          </div>
+          <HeroSearch />
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/kayit">
+            <Link href="/panel/sikayet-yaz">
               <Button size="lg" className="bg-green-500 hover:bg-green-600 text-white">
                 <PenSquare className="h-5 w-5" />
                 Şikayet Yaz
@@ -207,11 +193,11 @@ export default async function HomePage() {
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-4">Şikayetinizi Hemen Yazın</h2>
           <p className="text-gray-300 mb-8 max-w-xl mx-auto">
-            Ücretsiz hesap oluşturun ve şikayetinizi markaya iletin. Çözüm sürecini takip edin.
+            Şikayetinizi yazın, markalar çözsün. Ücretsiz ve kolay.
           </p>
-          <Link href="/kayit">
+          <Link href="/panel/sikayet-yaz">
             <Button size="lg" className="bg-green-500 hover:bg-green-600">
-              Ücretsiz Başla
+              <PenSquare className="h-5 w-5" /> Şikayet Yaz
             </Button>
           </Link>
         </div>

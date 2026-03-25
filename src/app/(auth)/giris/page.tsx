@@ -17,6 +17,7 @@ function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirect = searchParams.get('redirect') || '/panel';
+  const hasDraft = searchParams.get('draft') === 'true';
   const supabase = createClient();
 
   async function handleSubmit(e: React.FormEvent) {
@@ -41,7 +42,10 @@ function LoginForm() {
         .single();
 
       const role = profile?.role;
-      if (role === 'super_admin') {
+      if (hasDraft) {
+        // User has a pending complaint draft, redirect to submit it
+        window.location.href = '/panel/sikayet-yaz?draft=true';
+      } else if (role === 'super_admin') {
         window.location.href = '/admin';
       } else if (role === 'brand_admin') {
         window.location.href = '/marka-panel';
@@ -63,6 +67,11 @@ function LoginForm() {
       </CardHeader>
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-4">
+          {hasDraft && (
+            <div className="p-3 rounded-lg bg-blue-50 text-blue-700 text-sm border border-blue-200">
+              📝 Şikayetiniz kaydedildi. Göndermek için giriş yapın veya üye olun.
+            </div>
+          )}
           {error && (
             <div className="p-3 rounded-lg bg-red-50 text-red-600 text-sm">{error}</div>
           )}
@@ -87,7 +96,7 @@ function LoginForm() {
             {loading ? 'Giriş yapılıyor...' : 'Giriş Yap'}
           </Button>
           <p className="text-sm text-gray-500 text-center">
-            Hesabınız yok mu? <Link href="/kayit" className="text-[#1B1F3B] font-medium hover:underline">Kayıt Ol</Link>
+            Hesabınız yok mu? <Link href={`/kayit${hasDraft ? '?draft=true' : ''}`} className="text-[#1B1F3B] font-medium hover:underline">Kayıt Ol</Link>
           </p>
         </CardFooter>
       </form>

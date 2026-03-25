@@ -61,7 +61,11 @@ export default function RegisterPage() {
     if (data.user) {
       await supabase.auth.signInWithPassword({ email, password });
 
-      if (tab === 'brand') {
+      // Check if there's a draft complaint to submit
+      const hasDraft = typeof window !== 'undefined' && localStorage.getItem('superscore_draft_complaint');
+      if (hasDraft && tab !== 'brand') {
+        window.location.href = '/panel/sikayet-yaz?draft=true';
+      } else if (tab === 'brand') {
         window.location.href = '/marka-panel';
       } else {
         window.location.href = '/panel';
