@@ -92,7 +92,7 @@ export function StarRating({ rating, size = 'md', showScore = false, reviewCount
   }
 
   return (
-    <div className={`flex items-center ${className}`} style={{ gap: s.gap }}>
+    <div className={`flex items-center${className ? ` ${className}` : ''}`} style={{ gap: s.gap }}>
       <div className="flex items-center" style={{ gap: s.gap }}>
         {stars}
       </div>
