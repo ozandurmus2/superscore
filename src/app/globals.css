@@ -164,6 +164,15 @@ body {
   animation: connectorGlow 2s ease-in-out infinite;
 }
 
+/* Contour spin - rotating dash around rect border */
+@keyframes contourSpin {
+  0% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -264; }
+}
+.animate-contour-spin {
+  animation: contourSpin 3s linear infinite;
+}
+
 /* Hero dark animated background */
 @keyframes heroGradient {
   0% { transform: scale(1) translate(0, 0); }

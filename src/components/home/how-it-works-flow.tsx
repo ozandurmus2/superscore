@@ -71,6 +71,13 @@ export function HowItWorksFlow() {
                       <stop offset="50%" stopColor="#52b37f" stopOpacity="0.8" />
                       <stop offset="100%" stopColor="white" stopOpacity="0" />
                     </linearGradient>
+                    {/* Contour glow gradient for rotating border */}
+                    <linearGradient id="contour-glow">
+                      <stop offset="0%" stopColor="white" stopOpacity="0" />
+                      <stop offset="40%" stopColor="white" stopOpacity="0.7" />
+                      <stop offset="60%" stopColor="white" stopOpacity="0.7" />
+                      <stop offset="100%" stopColor="white" stopOpacity="0" />
+                    </linearGradient>
                     {/* Glow filter for Superscore box */}
                     <filter id="ss-glow" x="-50%" y="-50%" width="200%" height="200%">
                       <feGaussianBlur stdDeviation="3" result="blur" />
@@ -81,50 +88,62 @@ export function HowItWorksFlow() {
                     </filter>
                   </defs>
 
-                  {/* === FLOW PATH: Tüketici → around Superscore box → Marka === */}
-                  {/* The path goes: from Tüketici box right edge → arrives at Superscore box left side → goes around top of SS box → continues right → arrow to Marka */}
-
-                  {/* Base path (dim) */}
+                  {/* === LINE 1: Tüketici → Superscore (goes BEHIND the SS box) === */}
                   <path
-                    d="M 75 80 L 130 80 Q 135 80 135 75 L 135 55 Q 135 50 140 50 L 220 50 Q 225 50 225 55 L 225 75 Q 225 80 230 80 L 285 80"
+                    d="M 75 86 L 140 86"
                     stroke="white"
                     strokeWidth="1.5"
                     strokeLinecap="round"
-                    opacity="0.15"
+                    opacity="0.12"
                   />
-
-                  {/* Animated flowing particle on the path */}
                   <path
-                    d="M 75 80 L 130 80 Q 135 80 135 75 L 135 55 Q 135 50 140 50 L 220 50 Q 225 50 225 55 L 225 75 Q 225 80 230 80 L 285 80"
+                    d="M 75 86 L 140 86"
                     stroke="url(#flow-glow)"
-                    strokeWidth="2.5"
+                    strokeWidth="2"
                     strokeLinecap="round"
-                    strokeDasharray="30 300"
+                    strokeDasharray="15 100"
                     className={isVisible ? 'animate-dash-flow' : ''}
-                    filter="url(#ss-glow)"
                   />
 
-                  {/* Superscore box contour glow - animated border around the SS icon */}
-                  <rect
-                    x="140" y="60" width="80" height="52" rx="12"
-                    stroke="#52b37f"
+                  {/* === LINE 2: Superscore → Marka (starts from center-right of SS box) === */}
+                  <path
+                    d="M 220 86 L 285 86"
+                    stroke="white"
                     strokeWidth="1.5"
-                    fill="none"
-                    opacity="0.3"
-                    className={isVisible ? 'animate-line-pulse' : ''}
+                    strokeLinecap="round"
+                    opacity="0.12"
                   />
-                  <rect
-                    x="140" y="60" width="80" height="52" rx="12"
-                    stroke="#52b37f"
+                  <path
+                    d="M 220 86 L 285 86"
+                    stroke="url(#flow-glow)"
                     strokeWidth="2"
-                    fill="none"
-                    strokeDasharray="20 250"
-                    className={isVisible ? 'animate-dash-flow-slow' : ''}
-                    filter="url(#ss-glow)"
+                    strokeLinecap="round"
+                    strokeDasharray="15 100"
+                    className={isVisible ? 'animate-dash-flow-delay' : ''}
                   />
 
                   {/* Arrow head before Marka */}
-                  <path d="M 281 76 L 288 80 L 281 84" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity="0.5" />
+                  <path d="M 281 82 L 288 86 L 281 90" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity="0.5" />
+
+                  {/* === SUPERSCORE BOX CONTOUR: rotating white/gray border === */}
+                  {/* Base subtle border - always visible */}
+                  <rect
+                    x="140" y="60" width="80" height="52" rx="12"
+                    stroke="white"
+                    strokeWidth="1"
+                    fill="none"
+                    opacity="0.15"
+                  />
+                  {/* Animated rotating glow on border */}
+                  <rect
+                    x="140" y="60" width="80" height="52" rx="12"
+                    stroke="url(#contour-glow)"
+                    strokeWidth="2"
+                    fill="none"
+                    strokeDasharray="30 234"
+                    className={isVisible ? 'animate-contour-spin' : ''}
+                    filter="url(#ss-glow)"
+                  />
 
                   {/* Return arc - bottom dashed */}
                   <path
