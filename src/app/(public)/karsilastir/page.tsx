@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Check, X } from 'lucide-react';
 
 /* ── Intersection hook ── */
 function useInView(threshold = 0.15) {
@@ -18,7 +18,7 @@ function useInView(threshold = 0.15) {
 }
 
 /* ── Animated counter ── */
-function Counter({ end, suffix = '', prefix = '', duration = 2200 }: { end: number; suffix?: string; prefix?: string; duration?: number }) {
+function Counter({ end, suffix = '', duration = 2200 }: { end: number; suffix?: string; duration?: number }) {
   const [val, setVal] = useState(0);
   const ref = useRef<HTMLSpanElement>(null);
   const started = useRef(false);
@@ -41,7 +41,7 @@ function Counter({ end, suffix = '', prefix = '', duration = 2200 }: { end: numb
     return () => obs.disconnect();
   }, [end, duration]);
 
-  return <span ref={ref}>{prefix}{val.toLocaleString('tr-TR')}{suffix}</span>;
+  return <span ref={ref}>{val.toLocaleString('tr-TR')}{suffix}</span>;
 }
 
 /* ── Thin bar chart (canvas) ── */
@@ -85,7 +85,7 @@ function ThinBarChart() {
       heights.push((wave + growth) * h * 0.8);
     }
 
-    const duration = 6000; // slower
+    const duration = 6000;
     const startTime = performance.now();
 
     const draw = (now: number) => {
@@ -100,7 +100,7 @@ function ThinBarChart() {
         const bh = heights[i] * barProgress;
         const x = i * (barW + gap);
         const alpha = 0.3 + barProgress * 0.7;
-        ctx.fillStyle = `rgba(132, 162, 95, ${alpha})`; // #84a25f
+        ctx.fillStyle = `rgba(132, 162, 95, ${alpha})`;
         ctx.beginPath();
         ctx.roundRect(x, h - bh, barW, bh, 1);
         ctx.fill();
@@ -131,15 +131,15 @@ function CyclingGrid() {
   }, []);
 
   const gridItems = [
-    { icon: '★', label: 'Widget' },
-    { icon: '◈', label: 'API' },
-    { icon: '⟁', label: 'Analitik' },
-    { icon: '⬡', label: 'Raporlama' },
-    { icon: '◉', label: 'Entegrasyon' },
-    { icon: '△', label: 'Dashboard' },
-    { icon: '□', label: 'Puanlama' },
-    { icon: '◇', label: 'İnceleme' },
-    { icon: '○', label: 'Moderasyon' },
+    { icon: '★', label: 'Şikayet' },
+    { icon: '◈', label: 'Çözüm' },
+    { icon: '⟁', label: 'Puan' },
+    { icon: '⬡', label: 'Güven' },
+    { icon: '◉', label: 'Doğrulama' },
+    { icon: '△', label: 'Takip' },
+    { icon: '□', label: 'Kupon' },
+    { icon: '◇', label: 'Hediye' },
+    { icon: '○', label: 'İnceleme' },
   ];
 
   const sets = [
@@ -186,46 +186,43 @@ function CyclingGrid() {
 export default function KarsilastirPage() {
   const hero = useInView(0.1);
   const steps = useInView(0.1);
+  const compare = useInView(0.1);
   const chart = useInView(0.1);
   const grid = useInView(0.1);
   const partners = useInView(0.1);
+  const cta = useInView(0.1);
 
   return (
     <div>
 
       {/* ═══ SECTION 1: HERO ═══ */}
       <section ref={hero.ref} className="relative overflow-hidden" style={{ background: '#0f1e26' }}>
-        {/* Video background */}
-        <video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover opacity-30">
-          <source src="/compare-bg.mp4" type="video/mp4" />
-        </video>
-
         {/* Soft green glow from right */}
         <div className="absolute top-0 right-0 w-[60%] h-full" style={{
           background: 'radial-gradient(ellipse at 80% 50%, rgba(28, 67, 44, 0.6) 0%, transparent 70%)',
         }} />
 
         <div className="container mx-auto px-4 relative z-10">
-          <div className="flex flex-col md:flex-row items-center min-h-[580px] md:min-h-[640px] py-16 md:py-0 gap-10 md:gap-16">
+          <div className="flex flex-col md:flex-row items-center min-h-[540px] md:min-h-[620px] py-16 md:py-0 gap-10 md:gap-16">
             {/* Left text */}
             <div className="flex-1 max-w-xl">
-              <p className={`text-[#04da8d]/70 text-xs tracking-[0.2em] uppercase mb-5 transition-all duration-700${hero.v ? ' opacity-100 translate-y-0' : ' opacity-0 translate-y-4'}`}>
-                Neden Superscore?
+              <p className={`text-[#7ce9a5]/60 text-xs tracking-[0.2em] uppercase mb-5 transition-all duration-700${hero.v ? ' opacity-100 translate-y-0' : ' opacity-0 translate-y-4'}`}>
+                Superscore Karşılaştırma
               </p>
-              <h1 className={`text-3xl md:text-[42px] lg:text-[48px] text-white leading-[1.15] mb-5 transition-all duration-700${hero.v ? ' opacity-100 translate-y-0' : ' opacity-0 translate-y-6'}`} style={{ transitionDelay: '100ms', fontWeight: 450 }}>
-                Türkiye&apos;nin en <span className="text-[#04da8d]">adil</span> değerlendirme platformu
+              <h1 className={`text-3xl md:text-[42px] lg:text-[50px] text-white leading-[1.12] mb-5 transition-all duration-700${hero.v ? ' opacity-100 translate-y-0' : ' opacity-0 translate-y-6'}`} style={{ transitionDelay: '100ms', fontWeight: 450 }}>
+                Ticaret eklentilerde değil, <span className="text-[#7ce9a5]">platformlarda</span> gerçekleşir
               </h1>
-              <p className={`text-white/45 text-sm md:text-[15px] leading-relaxed mb-8 max-w-md transition-all duration-700${hero.v ? ' opacity-100 translate-y-0' : ' opacity-0 translate-y-6'}`} style={{ transitionDelay: '200ms' }}>
-                Diğer platformlar sadece şikayeti yayınlar. Biz tüketici ile marka arasında köprü kurar, şikayetlerin gerçekten çözülmesini sağlarız.
+              <p className={`text-white/40 text-sm md:text-[15px] leading-relaxed mb-8 max-w-md transition-all duration-700${hero.v ? ' opacity-100 translate-y-0' : ' opacity-0 translate-y-6'}`} style={{ transitionDelay: '200ms' }}>
+                Şikayetinizi yazın, markanız çözsün. Superscore ile tüketici ve marka arasındaki güven köprüsünü keşfedin.
               </p>
               <div className={`flex flex-wrap items-center gap-3 transition-all duration-700${hero.v ? ' opacity-100 translate-y-0' : ' opacity-0 translate-y-6'}`} style={{ transitionDelay: '300ms' }}>
-                <Link href="/register">
-                  <button className="px-6 py-3 bg-[#04da8d] text-[#0f1e26] text-sm font-semibold rounded-full hover:bg-[#04da8d]/90 transition-colors inline-flex items-center gap-2">
-                    Hemen Başla <ArrowRight className="w-4 h-4" />
+                <Link href="/sikayet-yaz">
+                  <button className="px-6 py-3 bg-[#7ce9a5] text-[#0f1e26] text-sm font-semibold rounded-full hover:bg-[#7ce9a5]/90 transition-colors inline-flex items-center gap-2">
+                    Şikayet Yaz <ArrowRight className="w-4 h-4" />
                   </button>
                 </Link>
                 <Link href="/nasil-calisir">
-                  <button className="px-6 py-3 text-white/70 text-sm rounded-full border border-white/15 hover:bg-white/5 transition-colors">
+                  <button className="px-6 py-3 text-[#7ce9a5]/70 text-sm rounded-full border border-[#7ce9a5]/20 hover:bg-[#7ce9a5]/5 transition-colors">
                     Nasıl Çalışır?
                   </button>
                 </Link>
@@ -235,7 +232,7 @@ export default function KarsilastirPage() {
             {/* Right - Graph image */}
             <div className={`flex-1 flex justify-center md:justify-end transition-all duration-1000${hero.v ? ' opacity-100 translate-x-0' : ' opacity-0 translate-x-10'}`} style={{ transitionDelay: '400ms' }}>
               <div className="relative w-full max-w-[440px]">
-                <div className="absolute -inset-8 bg-[radial-gradient(ellipse_at_center,rgba(4,218,141,0.08),transparent_70%)]" />
+                <div className="absolute -inset-8 bg-[radial-gradient(ellipse_at_center,rgba(124,233,165,0.06),transparent_70%)]" />
                 <Image
                   src="/graph.png"
                   alt="Superscore Analitik"
@@ -272,23 +269,23 @@ export default function KarsilastirPage() {
             {[
               {
                 num: '1',
-                title: 'Şikayet Yaz',
-                desc: 'Yaşadığın sorunu markaya ilet. Sipariş bilgilerini ekle, detaylandır.',
+                title: 'Yorum Yazın',
+                desc: 'Şikayetinizi veya değerlendirmenizi yazın. Çözüm için talebinizi net bir şekilde iletin.',
               },
               {
                 num: '2',
                 title: 'Marka Yanıtlar',
-                desc: 'Marka şikayetini görür ve çözüm sürecini başlatır. Hediye veya kupon sunabilir.',
+                desc: 'Marka şikayetinizi görür, aksiyon alır. Çözüm süreci hem profilinde yayınlanır hem Superscore puanına yansır.',
               },
               {
                 num: '3',
-                title: 'AI Doğrulama',
-                desc: 'Yapay zeka çözüm belgelerini inceler, admin ekibi onaylar. Şeffaf süreç.',
+                title: 'Superscore Doğrular',
+                desc: 'AI teknolojimiz markanın cevabını ve belgelerini analiz eder. Çözüm onayınızla şikayet kapatılır, siz de değerlendirirsiniz.',
               },
               {
                 num: '4',
-                title: 'Puan Güncellenir',
-                desc: 'Çözülen her şikayet Superscore puanını yükseltir. Dinamik ve gerçek zamanlı.',
+                title: 'Şikayet Memnuniyete Dönüşür',
+                desc: 'Çözüm sonrası markanın Superscore puanı yükselir. Marka size hediye, kupon veya özel teklifler sunabilir.',
               },
             ].map((step, i) => (
               <div
@@ -296,22 +293,98 @@ export default function KarsilastirPage() {
                 className={`bg-white rounded-3xl p-7 md:p-8 shadow-[0_2px_20px_rgba(0,0,0,0.06)] transition-all duration-700${steps.v ? ' opacity-100 translate-y-0' : ' opacity-0 translate-y-10'}`}
                 style={{ transitionDelay: `${200 + i * 120}ms` }}
               >
-                <div className="mb-5">
-                  <span
-                    className="font-superscore-bold text-[56px] md:text-[64px] leading-none"
-                    style={{
-                      background: 'linear-gradient(180deg, #04da8d 0%, #04da8d33 100%)',
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
-                    }}
-                  >
-                    {step.num}
-                  </span>
+                {/* Circle number like the reference image */}
+                <div className="mb-5 flex items-center justify-start">
+                  <div className="relative">
+                    {/* Outer glow ring */}
+                    <div className="w-[72px] h-[72px] md:w-[80px] md:h-[80px] rounded-full flex items-center justify-center" style={{ background: 'radial-gradient(circle, #b8f5d2 0%, #d4fae5 50%, #e8fdf0 100%)' }}>
+                      {/* Inner circle */}
+                      <div className="w-[56px] h-[56px] md:w-[62px] md:h-[62px] rounded-full flex items-center justify-center" style={{ background: 'linear-gradient(145deg, #7ce9a5 0%, #5dd98d 100%)' }}>
+                        <span className="font-superscore-bold text-[24px] md:text-[28px] text-[#0f1e26]">{step.num}</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 <h3 className="text-[#1b1a1b] text-base font-semibold mb-2">{step.title}</h3>
-                <p className="text-[#1b1a1b]/45 text-sm leading-relaxed">{step.desc}</p>
+                <p className="text-[#1b1a1b]/60 text-sm leading-relaxed">{step.desc}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ SECTION: PLATFORM COMPARISON (B2C) ═══ */}
+      <section ref={compare.ref} className="py-20 md:py-28 bg-[#f8f9fa]">
+        <div className="container mx-auto px-4">
+          <div className={`text-center mb-14 transition-all duration-700${compare.v ? ' opacity-100 translate-y-0' : ' opacity-0 translate-y-6'}`}>
+            <p className="text-[#52b37f]/60 text-xs tracking-[0.2em] uppercase mb-3">Neden Superscore?</p>
+            <h2 className="text-2xl md:text-[34px] text-[#1b1a1b] leading-tight" style={{ fontWeight: 450 }}>
+              Şikayetinizi nereye yazmalısınız?
+            </h2>
+            <p className="text-[#1b1a1b]/40 text-sm mt-3 max-w-lg mx-auto">
+              Diğer platformlarda şikayetiniz sadece yayınlanır. Superscore&apos;da gerçekten çözülür.
+            </p>
+          </div>
+
+          <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Diğerleri */}
+            <div className={`bg-white rounded-3xl p-8 md:p-10 border border-gray-100 transition-all duration-700${compare.v ? ' opacity-100 translate-x-0' : ' opacity-0 -translate-x-8'}`} style={{ transitionDelay: '200ms' }}>
+              <div className="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center mb-6">
+                <X className="w-5 h-5 text-red-400" />
+              </div>
+              <h3 className="text-[#1b1a1b] text-lg mb-5" style={{ fontWeight: 500 }}>Diğer platformlar</h3>
+              <ul className="space-y-4">
+                {[
+                  'Şikayetiniz çözülse bile profilde kalır',
+                  'Markanın çözüm motivasyonu düşük',
+                  'Çözüm takibi ve doğrulama yok',
+                  'Sadece şikayet yayınlanır, aksiyon alınmaz',
+                  'Hediye veya kupon sistemi yok',
+                  'Şikayetinizin sonucu belirsiz kalır',
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-3 text-[#1b1a1b]/50 text-sm">
+                    <div className="w-5 h-5 rounded-full bg-red-50 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <X className="w-3 h-3 text-red-300" strokeWidth={3} />
+                    </div>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Superscore */}
+            <div className={`bg-[#0f1e26] rounded-3xl p-8 md:p-10 transition-all duration-700${compare.v ? ' opacity-100 translate-x-0' : ' opacity-0 translate-x-8'}`} style={{ transitionDelay: '300ms' }}>
+              <div className="w-10 h-10 rounded-xl bg-[#52b37f] flex items-center justify-center mb-6">
+                <Image src="/logo/star_icon.png" alt="" width={20} height={20} className="w-5 h-5" style={{ filter: 'brightness(0) invert(1)' }} />
+              </div>
+              <h3 className="text-white text-lg mb-5" style={{ fontWeight: 500 }}>Superscore</h3>
+              <ul className="space-y-4">
+                {[
+                  'Çözülen şikayet onayınızla kapatılır',
+                  'Marka Superscore puanı için çözüm sağlar',
+                  'AI teknolojisi ile çözüm doğrulanır',
+                  'Şikayet süreciniz baştan sona takip edilir',
+                  'Markadan hediye ve kupon alabilirsiniz',
+                  'Çözüm markanın profiline yansır',
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-3 text-white/55 text-sm">
+                    <div className="w-5 h-5 rounded-full bg-[#52b37f]/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Check className="w-3 h-3 text-[#52b37f]" strokeWidth={3} />
+                    </div>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          {/* CTA under comparison */}
+          <div className={`text-center mt-10 transition-all duration-700${compare.v ? ' opacity-100 translate-y-0' : ' opacity-0 translate-y-6'}`} style={{ transitionDelay: '500ms' }}>
+            <Link href="/sikayet-yaz">
+              <button className="px-7 py-3.5 bg-[#52b37f] text-white text-sm font-semibold rounded-full hover:bg-[#47a06f] transition-colors inline-flex items-center gap-2">
+                Şikayetini Yaz <ArrowRight className="w-4 h-4" />
+              </button>
+            </Link>
           </div>
         </div>
       </section>
@@ -335,7 +408,7 @@ export default function KarsilastirPage() {
             {[
               { value: 12, suffix: '', label: 'Benzersiz özellik', desc: 'Diğer platformlarda bulunmayan, sadece Superscore\'da olan özellik sayısı' },
               { value: 100, suffix: '%', label: 'Çözüm odaklı sistem', desc: 'Her şikayet AI destekli doğrulama sürecinden geçer ve gerçek çözüm sağlanır' },
-              { value: 50, suffix: '%', label: 'Daha düşük maliyet', desc: 'Diğer platformlara kıyasla markalar için ortalama maliyet avantajı' },
+              { value: 50, suffix: '%', label: 'Daha hızlı çözüm', desc: 'Otomatik süreç yönetimi ile şikayetler diğer platformlara kıyasla çok daha hızlı çözülür' },
             ].map((s, i) => (
               <div
                 key={i}
@@ -356,7 +429,7 @@ export default function KarsilastirPage() {
         </div>
       </section>
 
-      {/* ═══ SECTION 4: GRID BOXES ═══ */}
+      {/* ═══ SECTION 4: GRID BOXES - B2C focused ═══ */}
       <section ref={grid.ref} className="py-20 md:py-28" style={{ background: '#fdfef2' }}>
         <div className="container mx-auto px-4">
           <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
@@ -365,23 +438,23 @@ export default function KarsilastirPage() {
               <CyclingGrid />
             </div>
 
-            {/* Right - Text */}
+            {/* Right - Text (B2C focused) */}
             <div className="flex-1">
               <div className={`transition-all duration-700${grid.v ? ' opacity-100 translate-y-0' : ' opacity-0 translate-y-6'}`} style={{ transitionDelay: '100ms' }}>
-                <p className="text-[#526240]/50 text-xs tracking-[0.2em] uppercase mb-4">Modüler Araçlar</p>
+                <p className="text-[#526240]/50 text-xs tracking-[0.2em] uppercase mb-4">Sizin İçin</p>
                 <h2 className="text-2xl md:text-[34px] text-[#1b1a1b] leading-tight mb-5" style={{ fontWeight: 450 }}>
-                  Markanız için güçlü araçlar
+                  Şikayetiniz gerçekten çözülsün
                 </h2>
                 <p className="text-[#1b1a1b]/45 text-sm md:text-[15px] leading-relaxed mb-8 max-w-md">
-                  Widget entegrasyonu, çoklu platform yorum toplama, gerçek zamanlı analitik ve daha fazlası. Superscore, markaların müşteri deneyimini iyileştirmesi için modern araçlar sunar.
+                  Superscore, şikayetinizi sadece yayınlamaz. Markayla aranızda köprü kurarak çözüm sürecini başlatır, AI ile doğrular ve sonucu size bildirir.
                 </p>
               </div>
 
               <div className={`space-y-4 transition-all duration-700${grid.v ? ' opacity-100 translate-y-0' : ' opacity-0 translate-y-6'}`} style={{ transitionDelay: '300ms' }}>
                 {[
-                  { title: 'Widget Entegrasyonu', desc: 'Superscore puanınızı web sitenizde ve tüm dijital kanallarınızda gösterin.' },
-                  { title: 'Çoklu Platform Toplama', desc: 'Tüm platformlardan yorumları tek panelde toplayın ve yönetin.' },
-                  { title: 'Gerçek Zamanlı Analitik', desc: 'Müşteri memnuniyetini ve marka performansını anlık takip edin.' },
+                  { title: 'Gerçek Çözüm Garantisi', desc: 'Şikayetiniz çözülmeden kapanmaz. AI doğrulaması ve sizin onayınız gerekir.' },
+                  { title: 'Hediye ve Kupon Fırsatları', desc: 'Markalar çözüm sürecinde size özel indirimler ve hediyeler sunabilir.' },
+                  { title: 'Şeffaf Süreç Takibi', desc: 'Şikayetinizin hangi aşamada olduğunu her an görebilirsiniz.' },
                 ].map((item, i) => (
                   <div key={i} className="flex items-start gap-3">
                     <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5" style={{ background: '#526240' }}>
@@ -398,9 +471,9 @@ export default function KarsilastirPage() {
               </div>
 
               <div className={`mt-8 transition-all duration-700${grid.v ? ' opacity-100 translate-y-0' : ' opacity-0 translate-y-6'}`} style={{ transitionDelay: '450ms' }}>
-                <Link href="/nasil-calisir">
+                <Link href="/sikayet-yaz">
                   <button className="px-6 py-3 text-sm font-medium rounded-full transition-colors" style={{ background: '#526240', color: '#f2fbd1' }}>
-                    Detayları İncele
+                    Şikayet Yaz
                   </button>
                 </Link>
               </div>
@@ -409,86 +482,63 @@ export default function KarsilastirPage() {
         </div>
       </section>
 
-      {/* ═══ SECTION 5: PARTNERS ═══ */}
-      <section ref={partners.ref} className="py-20 md:py-28 bg-white border-t border-gray-100">
+      {/* ═══ SECTION 5: PARTNERS & WHY FAST ═══ */}
+      <section ref={partners.ref} className="py-20 md:py-28 bg-white">
         <div className="container mx-auto px-4">
           <div className="flex flex-col lg:flex-row items-start gap-12 lg:gap-20">
-            {/* Left - Content */}
+            {/* Left - Why we solve fast */}
             <div className="flex-1">
               <div className={`transition-all duration-700${partners.v ? ' opacity-100 translate-y-0' : ' opacity-0 translate-y-6'}`}>
-                <p className="text-[#52b37f]/50 text-xs tracking-[0.2em] uppercase mb-4">Ekosistem</p>
+                <p className="text-[#1b1a1b]/30 text-xs tracking-[0.2em] uppercase mb-4">Şikayetinizi Neden Hızlı Çözüyoruz?</p>
                 <h2 className="text-2xl md:text-[34px] text-[#1b1a1b] leading-tight mb-5" style={{ fontWeight: 450 }}>
-                  İş ortaklarımızla <span className="text-[#52b37f]">büyüyoruz</span>
+                  Çözüm odaklı <span className="text-[#52b37f]">ekosistem</span>
                 </h2>
                 <p className="text-[#1b1a1b]/45 text-sm md:text-[15px] leading-relaxed mb-10 max-w-md">
-                  Superscore, markalar, ajanslar ve e-ticaret altyapıları ile entegre çalışır. Güven ekosistemini birlikte inşa ediyoruz.
+                  Markalar, ajanslar ve e-ticaret altyapıları ile entegre çalışıyoruz. Bu sayede şikayetiniz doğru kişiye ulaşır ve hızlıca çözülür.
                 </p>
               </div>
 
-              {/* Partner type cards */}
+              {/* Explanation cards */}
               <div className="space-y-4">
                 {[
                   {
-                    title: 'Markalar',
-                    desc: 'Müşteri güvenini artırın, Superscore puanınızla öne çıkın.',
-                    icon: (
-                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                        <rect x="2" y="6" width="16" height="12" rx="2" stroke="currentColor" strokeWidth="1.2" />
-                        <path d="M7 6V4a3 3 0 016 0v2" stroke="currentColor" strokeWidth="1.2" />
-                      </svg>
-                    ),
+                    title: 'Markalar aktif olarak platforma katılıyor',
+                    desc: 'Superscore puanını yükseltmek için şikayetleri hızla çözerler.',
                   },
                   {
-                    title: 'Ajanslar',
-                    desc: 'Müşterilerinizin online itibarını tek platformdan yönetin.',
-                    icon: (
-                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                        <circle cx="10" cy="7" r="3" stroke="currentColor" strokeWidth="1.2" />
-                        <path d="M4 17c0-3.3 2.7-6 6-6s6 2.7 6 6" stroke="currentColor" strokeWidth="1.2" />
-                      </svg>
-                    ),
+                    title: 'AI teknolojisi süreci hızlandırıyor',
+                    desc: 'Yapay zeka belge analizi ve çözüm doğrulaması ile bekleme süresini minimuma indirir.',
                   },
                   {
-                    title: 'E-Ticaret Altyapıları',
-                    desc: 'Shopify, WooCommerce ve diğer platformlarla kolay entegrasyon.',
-                    icon: (
-                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                        <rect x="3" y="3" width="14" height="14" rx="2" stroke="currentColor" strokeWidth="1.2" />
-                        <path d="M3 8h14M8 8v9" stroke="currentColor" strokeWidth="1.2" />
-                      </svg>
-                    ),
+                    title: 'Entegre sipariş doğrulama',
+                    desc: 'E-ticaret altyapılarıyla entegrasyon sayesinde sipariş bilginiz otomatik doğrulanır.',
                   },
-                ].map((partner, i) => (
+                ].map((item, i) => (
                   <div
                     key={i}
-                    className={`flex items-start gap-4 p-5 rounded-2xl border border-gray-100 hover:border-gray-200 hover:shadow-sm transition-all duration-700${partners.v ? ' opacity-100 translate-y-0' : ' opacity-0 translate-y-6'}`}
+                    className={`p-5 rounded-2xl border border-gray-100 hover:border-gray-200 transition-all duration-700${partners.v ? ' opacity-100 translate-y-0' : ' opacity-0 translate-y-6'}`}
                     style={{ transitionDelay: `${200 + i * 120}ms` }}
                   >
-                    <div className="w-10 h-10 rounded-xl bg-[#52b37f]/8 flex items-center justify-center text-[#52b37f] flex-shrink-0">
-                      {partner.icon}
-                    </div>
-                    <div>
-                      <p className="text-[#1b1a1b] text-sm font-medium mb-0.5">{partner.title}</p>
-                      <p className="text-[#1b1a1b]/40 text-xs leading-relaxed">{partner.desc}</p>
-                    </div>
+                    <p className="text-[#1b1a1b] text-sm font-medium mb-1">{item.title}</p>
+                    <p className="text-[#1b1a1b]/40 text-xs leading-relaxed">{item.desc}</p>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Right - İş Ortaklarımız text block */}
+            {/* Right - İş Ortaklarımız */}
             <div className={`flex-1 transition-all duration-1000${partners.v ? ' opacity-100 translate-x-0' : ' opacity-0 translate-x-10'}`} style={{ transitionDelay: '400ms' }}>
               <div className="bg-[#fafdf7] rounded-3xl p-8 md:p-12 border border-gray-100">
-                <h3 className="text-[#1b1a1b] text-lg mb-6" style={{ fontWeight: 450 }}>İş Ortaklarımız</h3>
+                <h3 className="text-[#1b1a1b] text-lg mb-6" style={{ fontWeight: 500 }}>İş Ortaklarımız</h3>
 
                 <div className="space-y-6">
                   <div>
                     <div className="flex items-center gap-2 mb-2">
-                      <div className="w-2 h-2 rounded-full bg-[#52b37f]" />
+                      <div className="w-2 h-2 rounded-full bg-[#1b1a1b]" />
                       <span className="text-[#1b1a1b] text-sm font-medium">Markalar</span>
                     </div>
-                    <p className="text-[#1b1a1b]/35 text-xs leading-relaxed pl-4">
-                      B2C ve B2B markalar Superscore üzerinden müşteri güvenini inşa eder. Dinamik puan sistemi ile gerçek performanslarını sergiler.
+                    <p className="text-[#1b1a1b]/45 text-xs leading-relaxed pl-4">
+                      Şikayetinizi doğrudan ilgili markaya iletiyoruz. Marka, Superscore puanını yükseltmek için çözüm üretmeye motive olur.
                     </p>
                   </div>
 
@@ -496,11 +546,11 @@ export default function KarsilastirPage() {
 
                   <div>
                     <div className="flex items-center gap-2 mb-2">
-                      <div className="w-2 h-2 rounded-full bg-[#3c57bc]" />
+                      <div className="w-2 h-2 rounded-full bg-[#1b1a1b]" />
                       <span className="text-[#1b1a1b] text-sm font-medium">Ajanslar</span>
                     </div>
-                    <p className="text-[#1b1a1b]/35 text-xs leading-relaxed pl-4">
-                      Dijital ajanslar müşterilerinin online itibarını Superscore paneli üzerinden yönetir. Çoklu marka desteği ile verimli çalışır.
+                    <p className="text-[#1b1a1b]/45 text-xs leading-relaxed pl-4">
+                      Dijital ajanslar markaların itibar yönetimini Superscore üzerinden yürütür. Bu sayede şikayetleriniz daha hızlı ele alınır.
                     </p>
                   </div>
 
@@ -508,20 +558,19 @@ export default function KarsilastirPage() {
 
                   <div>
                     <div className="flex items-center gap-2 mb-2">
-                      <div className="w-2 h-2 rounded-full bg-[#ef8d3f]" />
+                      <div className="w-2 h-2 rounded-full bg-[#1b1a1b]" />
                       <span className="text-[#1b1a1b] text-sm font-medium">E-Ticaret Altyapıları</span>
                     </div>
-                    <p className="text-[#1b1a1b]/35 text-xs leading-relaxed pl-4">
-                      Shopify, WooCommerce, Ticimax ve diğer altyapılarla entegre çalışır. Sipariş bilgisi doğrulama ile şikayet sürecini hızlandırır.
+                    <p className="text-[#1b1a1b]/45 text-xs leading-relaxed pl-4">
+                      Shopify, WooCommerce, Ticimax gibi altyapılarla entegre çalışarak sipariş doğrulaması yapar, çözüm sürecini hızlandırırız.
                     </p>
                   </div>
                 </div>
 
                 <div className="mt-8 pt-6 border-t border-gray-100">
-                  <p className="text-[#1b1a1b]/25 text-xs mb-4">Entegrasyon süreci dakikalar içinde tamamlanır.</p>
-                  <Link href="/is-ortakligi">
-                    <button className="px-5 py-2.5 text-sm rounded-full border border-gray-200 text-[#1b1a1b] hover:bg-gray-50 transition-colors">
-                      İş Ortağı Olun
+                  <Link href="/nasil-calisir">
+                    <button className="px-5 py-2.5 text-sm rounded-full border border-[#1b1a1b]/15 text-[#1b1a1b] hover:bg-gray-50 transition-colors">
+                      Detaylı Bilgi
                     </button>
                   </Link>
                 </div>
@@ -531,32 +580,32 @@ export default function KarsilastirPage() {
         </div>
       </section>
 
-      {/* ═══ FINAL CTA ═══ */}
-      <section className="py-20 md:py-28 relative overflow-hidden" style={{ background: '#0f1e26' }}>
+      {/* ═══ FINAL CTA - Enterprise style ═══ */}
+      <section ref={cta.ref} className="py-20 md:py-28 relative overflow-hidden" style={{ background: '#0f1e26' }}>
         <div className="absolute inset-0">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[radial-gradient(ellipse_at_center,rgba(4,218,141,0.06),transparent_70%)]" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[radial-gradient(ellipse_at_center,rgba(124,233,165,0.05),transparent_70%)]" />
         </div>
 
         <div className="container mx-auto px-4 relative z-10 text-center">
-          <div className="max-w-xl mx-auto">
-            <div className="w-14 h-14 rounded-2xl bg-[#04da8d] flex items-center justify-center mx-auto mb-8">
-              <Image src="/logo/star_icon.png" alt="" width={32} height={32} className="w-8 h-8" style={{ filter: 'brightness(0) invert(1)' }} />
-            </div>
-            <h2 className="text-2xl md:text-4xl text-white mb-4 leading-tight" style={{ fontWeight: 450 }}>
-              Farkı deneyimleyin
-            </h2>
-            <p className="text-white/35 text-sm mb-10 max-w-md mx-auto">
-              Şikayetlerin gerçekten çözüldüğü, markaların güvendiği, tüketicilerin tercih ettiği platform.
+          <div className="max-w-2xl mx-auto">
+            <p className={`text-[#7ce9a5]/40 text-xs tracking-[0.2em] uppercase mb-5 transition-all duration-700${cta.v ? ' opacity-100 translate-y-0' : ' opacity-0 translate-y-4'}`}>
+              Superscore
             </p>
-            <div className="flex flex-wrap items-center justify-center gap-3">
-              <Link href="/register">
-                <button className="px-7 py-3.5 bg-[#04da8d] text-[#0f1e26] text-sm font-semibold rounded-full hover:bg-[#04da8d]/90 transition-colors inline-flex items-center gap-2">
-                  Hemen Başla <ArrowRight className="w-4 h-4" />
+            <h2 className={`text-2xl md:text-4xl lg:text-[46px] text-white leading-tight mb-5 transition-all duration-700${cta.v ? ' opacity-100 translate-y-0' : ' opacity-0 translate-y-6'}`} style={{ fontWeight: 450, transitionDelay: '100ms' }}>
+              Kurumsal işletmelere güç sağlıyor
+            </h2>
+            <p className={`text-white/35 text-sm md:text-[15px] mb-10 max-w-lg mx-auto leading-relaxed transition-all duration-700${cta.v ? ' opacity-100 translate-y-0' : ' opacity-0 translate-y-6'}`} style={{ transitionDelay: '200ms' }}>
+              Superscore&apos;u teknoloji setinize nasıl entegre edebileceğinizi öğrenmek için ekibimizle görüşün. Müşteri güvenini birlikte inşa edelim.
+            </p>
+            <div className={`flex flex-wrap items-center justify-center gap-3 transition-all duration-700${cta.v ? ' opacity-100 translate-y-0' : ' opacity-0 translate-y-6'}`} style={{ transitionDelay: '300ms' }}>
+              <Link href="/sikayet-yaz">
+                <button className="px-7 py-3.5 text-[#0f1e26] text-sm font-semibold rounded-full hover:opacity-90 transition-colors inline-flex items-center gap-2" style={{ background: '#7ce9a5' }}>
+                  Ücretsiz Başla <ArrowRight className="w-4 h-4" />
                 </button>
               </Link>
               <Link href="/nasil-calisir">
-                <button className="px-7 py-3.5 text-white/50 text-sm rounded-full border border-white/10 hover:bg-white/5 transition-colors">
-                  Daha Fazla
+                <button className="px-7 py-3.5 text-sm rounded-full border transition-colors" style={{ color: '#7ce9a5', borderColor: 'rgba(124, 233, 165, 0.25)' }}>
+                  İletişime Geçin
                 </button>
               </Link>
             </div>
