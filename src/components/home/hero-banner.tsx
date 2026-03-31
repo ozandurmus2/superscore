@@ -14,7 +14,9 @@ export function HeroBanner() {
   }, []);
 
   return (
-    <section className="relative overflow-hidden bg-[#0a0a0a] min-h-[480px] md:min-h-[540px] flex items-center justify-center">
+    <section className="relative overflow-hidden bg-[#04da8d] min-h-[480px] md:min-h-[540px] flex items-center justify-center">
+      {/* Green background base + video animations on top */}
+
       {/* Video Background - Desktop */}
       <video
         key="desktop"
@@ -22,25 +24,22 @@ export function HeroBanner() {
         loop
         muted
         playsInline
-        className={`absolute inset-0 w-full h-full object-cover ${isMobile ? 'hidden' : 'block'}`}
+        className="absolute inset-0 w-full h-full object-cover hidden md:block"
       >
         <source src="/hero-bg.webm" type="video/webm" />
       </video>
 
-      {/* Video Background - Mobile: object-top to show upper portion */}
+      {/* Video Background - Mobile */}
       <video
         key="mobile"
         autoPlay
         loop
         muted
         playsInline
-        className={`absolute inset-0 w-full h-full object-cover object-top ${isMobile ? 'block' : 'hidden'}`}
+        className="absolute inset-0 w-full h-full object-cover object-top md:hidden"
       >
         <source src="/hero-bg-mobile.webm" type="video/webm" />
       </video>
-
-      {/* Dark overlay for text readability */}
-      <div className="absolute inset-0 bg-black/40" />
 
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 py-16 md:py-20 text-center">
