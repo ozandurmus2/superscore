@@ -138,6 +138,42 @@ body {
   animation: dashFlowAnim 4s linear 1.2s infinite;
 }
 
+/* Flow diagram - line glow animations */
+@keyframes flowLine1 {
+  0% { stroke-dashoffset: 92; opacity: 0; }
+  10% { opacity: 0.8; }
+  90% { opacity: 0.8; }
+  100% { stroke-dashoffset: -92; opacity: 0; }
+}
+.animate-flow-line-1 {
+  animation: flowLine1 2.5s ease-in-out infinite;
+}
+@keyframes flowLine2 {
+  0% { stroke-dashoffset: 65; opacity: 0; }
+  10% { opacity: 0.8; }
+  90% { opacity: 0.8; }
+  100% { stroke-dashoffset: -65; opacity: 0; }
+}
+.animate-flow-line-2 {
+  animation: flowLine2 2.5s ease-in-out 1.2s infinite;
+}
+@keyframes borderFlow {
+  0% { stroke-dashoffset: 0; opacity: 0.6; }
+  100% { stroke-dashoffset: -264; opacity: 0.6; }
+}
+.animate-border-flow {
+  animation: borderFlow 4s linear infinite;
+}
+@keyframes flowReturn {
+  0% { stroke-dashoffset: 365; opacity: 0; }
+  10% { opacity: 0.5; }
+  90% { opacity: 0.5; }
+  100% { stroke-dashoffset: -365; opacity: 0; }
+}
+.animate-flow-return {
+  animation: flowReturn 5s ease-in-out 2s infinite;
+}
+
 /* Floating particles */
 @keyframes float1 {
   0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; }
@@ -162,45 +198,6 @@ body {
 }
 .animate-connector-glow {
   animation: connectorGlow 2s ease-in-out infinite;
-}
-
-/* Flow diagram animations */
-@keyframes flowLine1 {
-  0% { stroke-dashoffset: 92; opacity: 0; }
-  10% { opacity: 0.8; }
-  90% { opacity: 0.8; }
-  100% { stroke-dashoffset: -92; opacity: 0; }
-}
-.animate-flow-line-1 {
-  animation: flowLine1 2.5s ease-in-out infinite;
-}
-
-@keyframes flowLine2 {
-  0% { stroke-dashoffset: 65; opacity: 0; }
-  10% { opacity: 0.8; }
-  90% { opacity: 0.8; }
-  100% { stroke-dashoffset: -65; opacity: 0; }
-}
-.animate-flow-line-2 {
-  animation: flowLine2 2.5s ease-in-out 1.2s infinite;
-}
-
-@keyframes borderFlow {
-  0% { stroke-dashoffset: 0; opacity: 0.6; }
-  100% { stroke-dashoffset: -264; opacity: 0.6; }
-}
-.animate-border-flow {
-  animation: borderFlow 4s linear infinite;
-}
-
-@keyframes flowReturn {
-  0% { stroke-dashoffset: 365; opacity: 0; }
-  10% { opacity: 0.5; }
-  90% { opacity: 0.5; }
-  100% { stroke-dashoffset: -365; opacity: 0; }
-}
-.animate-flow-return {
-  animation: flowReturn 5s ease-in-out 2s infinite;
 }
 
 /* Hero dark animated background */
