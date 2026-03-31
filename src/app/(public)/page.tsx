@@ -129,11 +129,11 @@ export default async function HomePage() {
               </Link>
             </div>
             <div
-              className="flex lg:grid lg:grid-cols-3 gap-4 overflow-x-auto pb-2"
+              className="flex lg:grid lg:grid-cols-3 gap-4 overflow-x-auto pb-2 snap-x snap-mandatory scroll-smooth"
               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
               {(brands as Brand[]).map((brand) => (
-                <Link key={brand.id} href={`/markalar/${brand.slug}`} className="flex-shrink-0 w-[75vw] sm:w-[45vw] lg:w-auto">
+                <Link key={brand.id} href={`/markalar/${brand.slug}`} className="flex-shrink-0 w-[75vw] sm:w-[45vw] lg:w-auto snap-start">
                   <div className="border border-gray-200 rounded-2xl p-5 hover:shadow-md hover:border-gray-300 transition-all h-full">
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-3">
@@ -186,11 +186,11 @@ export default async function HomePage() {
               </Link>
             </div>
             <div
-              className="flex lg:grid lg:grid-cols-3 gap-4 overflow-x-auto pb-2"
+              className="flex lg:grid lg:grid-cols-3 gap-4 overflow-x-auto pb-2 snap-x snap-mandatory scroll-smooth"
               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
               {(complaints as (Complaint & { brand: { name: string; slug: string } })[]).map((c) => (
-                <Link key={c.id} href={`/sikayetler/${c.id}`} className="flex-shrink-0 w-[80vw] sm:w-[45vw] lg:w-auto">
+                <Link key={c.id} href={`/sikayetler/${c.id}`} className="flex-shrink-0 w-[80vw] sm:w-[45vw] lg:w-auto snap-start">
                   <div className="border border-gray-200 rounded-2xl p-5 hover:shadow-md hover:border-gray-300 transition-all h-full">
                     <div className="flex items-center gap-2 mb-2">
                       <span className="text-xs text-gray-400 font-mono">{c.complaint_number}</span>

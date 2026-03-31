@@ -57,7 +57,7 @@ export async function BestInCategory() {
               </h2>
               <Link
                 href={`/markalar?kategori=${category}`}
-                className="px-5 py-2 text-sm font-medium text-[#3c57bc] border border-[#3c57bc] rounded-full hover:border-transparent hover:bg-[#f2f5fe] hover:text-[#2e2f2a] transition-all"
+                className="px-4 py-1.5 text-xs font-medium text-[#3c57bc] border border-[#3c57bc] rounded-full hover:border-transparent hover:bg-[#f2f5fe] hover:text-[#2e2f2a] transition-all whitespace-nowrap flex-shrink-0"
               >
                 Tümünü Gör
               </Link>
@@ -65,14 +65,14 @@ export async function BestInCategory() {
 
             {/* Brand Cards - Horizontal scroll on mobile, grid on desktop */}
             <div
-              className="flex lg:grid lg:grid-cols-4 gap-4 overflow-x-auto pb-2"
+              className="flex lg:grid lg:grid-cols-4 gap-4 overflow-x-auto pb-2 snap-x snap-mandatory scroll-smooth"
               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
               {categoryBrands.map((brand) => (
                 <Link
                   key={brand.id}
                   href={`/markalar/${brand.slug}`}
-                  className="border border-gray-200 rounded-2xl p-5 hover:shadow-md hover:border-gray-300 transition-all group flex-shrink-0 w-[75vw] sm:w-[45vw] lg:w-auto"
+                  className="border border-gray-200 rounded-2xl p-5 hover:shadow-md hover:border-gray-300 transition-all group flex-shrink-0 w-[75vw] sm:w-[45vw] lg:w-auto snap-start"
                 >
                   {/* Brand Logo Placeholder */}
                   <div className="w-16 h-16 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center mb-4 group-hover:border-gray-300 transition-colors">
