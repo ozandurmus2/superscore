@@ -192,17 +192,18 @@ export default function NasilCalisirPage() {
         {/* Dark overlay for readability */}
         <div className="absolute inset-0 bg-black/50" />
 
-        {/* Content overlay */}
-        <div className="absolute inset-0 z-10 flex items-center">
-          <div className="container mx-auto px-4">
+        {/* Content overlay - text at top + slider below */}
+        <div className="absolute inset-0 z-10 flex flex-col justify-between">
+          {/* Top: Hero text */}
+          <div className="container mx-auto px-4 pt-12 md:pt-16">
             <div className="max-w-2xl">
-              <p className={`text-[#d6f894]/60 text-xs tracking-[0.2em] uppercase mb-5 transition-all duration-700${hero.v ? ' opacity-100 translate-y-0' : ' opacity-0 translate-y-4'}`}>
+              <p className={`text-[#d6f894]/60 text-xs tracking-[0.2em] uppercase mb-4 transition-all duration-700${hero.v ? ' opacity-100 translate-y-0' : ' opacity-0 translate-y-4'}`}>
                 Superscore Nasıl Çalışır?
               </p>
-              <h1 className={`text-3xl md:text-[44px] lg:text-[52px] text-white leading-[1.1] mb-5 transition-all duration-700${hero.v ? ' opacity-100 translate-y-0' : ' opacity-0 translate-y-6'}`} style={{ transitionDelay: '100ms', fontWeight: 450 }}>
+              <h1 className={`text-2xl md:text-[38px] lg:text-[46px] text-white leading-[1.1] mb-4 transition-all duration-700${hero.v ? ' opacity-100 translate-y-0' : ' opacity-0 translate-y-6'}`} style={{ transitionDelay: '100ms', fontWeight: 450 }}>
                 Tüketici ile marka arasındaki güven köprüsü
               </h1>
-              <p className={`text-white/40 text-sm md:text-[15px] leading-relaxed mb-8 max-w-lg transition-all duration-700${hero.v ? ' opacity-100 translate-y-0' : ' opacity-0 translate-y-6'}`} style={{ transitionDelay: '200ms' }}>
+              <p className={`text-white/40 text-sm md:text-[15px] leading-relaxed mb-6 max-w-lg transition-all duration-700${hero.v ? ' opacity-100 translate-y-0' : ' opacity-0 translate-y-6'}`} style={{ transitionDelay: '200ms' }}>
                 Şikayetinizi yazın, marka çözsün. Her çözüm Superscore puanına yansır. Yapay zeka doğrular, siz onaylarsınız.
               </p>
               <div className={`flex flex-wrap items-center gap-3 transition-all duration-700${hero.v ? ' opacity-100 translate-y-0' : ' opacity-0 translate-y-6'}`} style={{ transitionDelay: '300ms' }}>
@@ -219,13 +220,11 @@ export default function NasilCalisirPage() {
               </div>
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* ═══ FEATURES SLIDER ═══ */}
-      <section className="py-16 md:py-24" style={{ background: '#0a0f08' }}>
-        <div className="container mx-auto px-4">
-          <FeatureSlider />
+          {/* Bottom: Feature slider inside same block */}
+          <div className="container mx-auto px-4 pb-10 md:pb-14">
+            <FeatureSlider />
+          </div>
         </div>
       </section>
 
