@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 
 export function HowItWorksFlow() {
@@ -16,36 +15,6 @@ export function HowItWorksFlow() {
     if (sectionRef.current) observer.observe(sectionRef.current);
     return () => observer.disconnect();
   }, []);
-
-  const steps = [
-    {
-      icon: (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-          <circle cx="12" cy="7" r="4" />
-        </svg>
-      ),
-      label: 'Tüketici',
-      sublabel: 'Şikayet yazar',
-    },
-    {
-      icon: (
-        <Image src="/logo/SS_Star.png" alt="Superscore" width={28} height={28} className="w-7 h-7" />
-      ),
-      label: 'Superscore',
-      sublabel: 'Puanlar güncellenir',
-    },
-    {
-      icon: (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-          <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
-          <path d="M16 7V5a4 4 0 0 0-8 0v2" />
-        </svg>
-      ),
-      label: 'Marka',
-      sublabel: 'Talepleri karşılar',
-    },
-  ];
 
   return (
     <section ref={sectionRef} className="bg-white py-6 md:py-8">
@@ -69,11 +38,7 @@ export function HowItWorksFlow() {
               </div>
               <div className={`transition-all duration-700${isVisible ? ' opacity-100 translate-y-0' : ' opacity-0 translate-y-6'}`} style={{ transitionDelay: '150ms' }}>
                 <p className="text-white/70 text-sm md:text-base leading-relaxed mb-8 max-w-lg">
-                  Tüketiciler ve markalar arasında kurulan güven köprüsü.
-                  Tüketiciler şikayetlerini yayınlar ve taleplerini iletir,
-                  markalar ise bu talepleri karşılar. Her çözüm ve her
-                  geri bildirimle birlikte Superscore puanı güncellenir
-                  &mdash; yukarıya da aşağıya.
+                  Tüketici ile marka arasındaki güven köprüsü. Şikayetler yayınlanır, markalar yanıtlar. Her çözümle Superscore puanı güncellenir.
                 </p>
               </div>
               <div className={`flex items-center gap-3 transition-all duration-700${isVisible ? ' opacity-100 translate-y-0' : ' opacity-0 translate-y-6'}`} style={{ transitionDelay: '300ms' }}>
@@ -90,82 +55,138 @@ export function HowItWorksFlow() {
               </div>
             </div>
 
-            {/* Right - Animated Flow Diagram */}
+            {/* Right - Animated Flow Diagram with SVG */}
             <div className="flex-1 flex items-center justify-center p-6 md:p-10 lg:p-12">
               <div className="relative w-full max-w-[360px]">
+                <svg viewBox="0 0 360 200" fill="none" className="w-full">
+                  <defs>
+                    {/* Glow gradient for the flowing particle */}
+                    <linearGradient id="flow-glow">
+                      <stop offset="0%" stopColor="white" stopOpacity="0" />
+                      <stop offset="50%" stopColor="#52b37f" stopOpacity="0.9" />
+                      <stop offset="100%" stopColor="white" stopOpacity="0" />
+                    </linearGradient>
+                    <linearGradient id="return-glow">
+                      <stop offset="0%" stopColor="white" stopOpacity="0" />
+                      <stop offset="50%" stopColor="#52b37f" stopOpacity="0.8" />
+                      <stop offset="100%" stopColor="white" stopOpacity="0" />
+                    </linearGradient>
+                    {/* Glow filter for Superscore box */}
+                    <filter id="ss-glow" x="-50%" y="-50%" width="200%" height="200%">
+                      <feGaussianBlur stdDeviation="3" result="blur" />
+                      <feMerge>
+                        <feMergeNode in="blur" />
+                        <feMergeNode in="SourceGraphic" />
+                      </feMerge>
+                    </filter>
+                  </defs>
 
-                {/* Flow Steps */}
-                <div className="flex items-center justify-between gap-2 md:gap-4">
-                  {steps.map((step, i) => (
-                    <div key={i} className="flex items-center gap-2 md:gap-4 flex-1">
-                      {/* Node */}
-                      <div
-                        className={`flex flex-col items-center transition-all duration-700${isVisible ? ' opacity-100 translate-y-0' : ' opacity-0 translate-y-4'}`}
-                        style={{ transitionDelay: `${400 + i * 200}ms` }}
-                      >
-                        <div className={`w-14 h-14 md:w-16 md:h-16 rounded-2xl flex items-center justify-center shadow-lg transition-all duration-500 ${
-                          i === 1
-                            ? 'bg-[#52b37f] text-white'
-                            : 'bg-white/10 backdrop-blur-sm border border-white/20 text-white'
-                        }${isVisible && i === 1 ? ' animate-float-star' : ''}`}>
-                          {step.icon}
-                        </div>
-                        <span className="text-[11px] md:text-xs text-white font-medium mt-2.5 whitespace-nowrap">{step.label}</span>
-                        <span className="text-[10px] md:text-[11px] text-white/50 mt-0.5 whitespace-nowrap">{step.sublabel}</span>
-                      </div>
+                  {/* === FLOW PATH: Tüketici → around Superscore box → Marka === */}
+                  {/* The path goes: from Tüketici box right edge → arrives at Superscore box left side → goes around top of SS box → continues right → arrow to Marka */}
 
-                      {/* Arrow connector (not after last) */}
-                      {i < steps.length - 1 && (
-                        <div className={`flex-1 flex items-center justify-center -mt-6 transition-all duration-500${isVisible ? ' opacity-100' : ' opacity-0'}`} style={{ transitionDelay: `${600 + i * 200}ms` }}>
-                          <div className="relative w-full h-[2px]">
-                            {/* Base line */}
-                            <div className="absolute inset-0 bg-white/15 rounded-full" />
-                            {/* Animated glow */}
-                            <div className={`absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-transparent via-white/60 to-transparent rounded-full${isVisible ? ' animate-connector-glow' : ''}`} style={{ animationDelay: `${i * 0.4}s` }} />
-                          </div>
-                          {/* Arrow head */}
-                          <svg width="8" height="12" viewBox="0 0 8 12" fill="none" className="flex-shrink-0 -ml-1">
-                            <path d="M1 1L6 6L1 11" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity="0.4" />
-                          </svg>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
+                  {/* Base path (dim) */}
+                  <path
+                    d="M 75 80 L 130 80 Q 135 80 135 75 L 135 55 Q 135 50 140 50 L 220 50 Q 225 50 225 55 L 225 75 Q 225 80 230 80 L 285 80"
+                    stroke="white"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    opacity="0.15"
+                  />
 
-                {/* Return arc - dashed line below */}
-                <div className={`mt-6 mx-6 transition-all duration-1000${isVisible ? ' opacity-100' : ' opacity-0'}`} style={{ transitionDelay: '1200ms' }}>
-                  <svg viewBox="0 0 280 40" fill="none" className="w-full">
+                  {/* Animated flowing particle on the path */}
+                  <path
+                    d="M 75 80 L 130 80 Q 135 80 135 75 L 135 55 Q 135 50 140 50 L 220 50 Q 225 50 225 55 L 225 75 Q 225 80 230 80 L 285 80"
+                    stroke="url(#flow-glow)"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeDasharray="30 300"
+                    className={isVisible ? 'animate-dash-flow' : ''}
+                    filter="url(#ss-glow)"
+                  />
+
+                  {/* Superscore box contour glow - animated border around the SS icon */}
+                  <rect
+                    x="140" y="60" width="80" height="52" rx="12"
+                    stroke="#52b37f"
+                    strokeWidth="1.5"
+                    fill="none"
+                    opacity="0.3"
+                    className={isVisible ? 'animate-line-pulse' : ''}
+                  />
+                  <rect
+                    x="140" y="60" width="80" height="52" rx="12"
+                    stroke="#52b37f"
+                    strokeWidth="2"
+                    fill="none"
+                    strokeDasharray="20 250"
+                    className={isVisible ? 'animate-dash-flow-slow' : ''}
+                    filter="url(#ss-glow)"
+                  />
+
+                  {/* Arrow head before Marka */}
+                  <path d="M 281 76 L 288 80 L 281 84" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity="0.5" />
+
+                  {/* Return arc - bottom dashed */}
+                  <path
+                    d="M 310 100 Q 310 165 180 165 Q 50 165 50 100"
+                    stroke="white"
+                    strokeWidth="1"
+                    strokeLinecap="round"
+                    strokeDasharray="4 6"
+                    opacity="0.15"
+                  />
+                  <path
+                    d="M 310 100 Q 310 165 180 165 Q 50 165 50 100"
+                    stroke="url(#return-glow)"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeDasharray="20 350"
+                    className={isVisible ? 'animate-dash-flow-slow' : ''}
+                  />
+                  {/* Return arrow */}
+                  <path d="M 47 104 L 50 96 L 53 104" stroke="white" strokeWidth="1" strokeLinecap="round" opacity="0.3" />
+
+                  {/* === NODE BOXES === */}
+
+                  {/* Tüketici box */}
+                  <g className={`transition-all duration-700${isVisible ? ' opacity-100' : ' opacity-0'}`} style={{ transitionDelay: '400ms' }}>
+                    <rect x="15" y="60" width="56" height="52" rx="12" fill="white" fillOpacity="0.08" stroke="white" strokeOpacity="0.2" strokeWidth="1" />
+                    {/* Person icon */}
+                    <circle cx="43" cy="78" r="6" stroke="white" strokeWidth="1.2" fill="none" />
+                    <path d="M 33 98 Q 33 90 43 90 Q 53 90 53 98" stroke="white" strokeWidth="1.2" fill="none" strokeLinecap="round" />
+                  </g>
+
+                  {/* Superscore box */}
+                  <g className={`transition-all duration-700${isVisible ? ' opacity-100' : ' opacity-0'}`} style={{ transitionDelay: '600ms' }}>
+                    <rect x="140" y="60" width="80" height="52" rx="12" fill="#52b37f" />
+                    {/* Star icon (white) - using a 5-pointed star path */}
                     <path
-                      d="M 260 0 Q 260 30 140 30 Q 20 30 20 0"
-                      stroke="white"
-                      strokeWidth="1"
-                      fill="none"
-                      strokeLinecap="round"
-                      strokeDasharray="4 6"
-                      opacity="0.2"
+                      d="M 180 70 L 183.5 79 L 193 79.5 L 186 85.5 L 188 95 L 180 90 L 172 95 L 174 85.5 L 167 79.5 L 176.5 79 Z"
+                      fill="white"
                     />
-                    <path
-                      d="M 260 0 Q 260 30 140 30 Q 20 30 20 0"
-                      stroke="url(#return-glow)"
-                      strokeWidth="1.5"
-                      fill="none"
-                      strokeLinecap="round"
-                      strokeDasharray="20 280"
-                      className={isVisible ? 'animate-dash-flow-slow' : ''}
-                    />
-                    <defs>
-                      <linearGradient id="return-glow">
-                        <stop offset="0%" stopColor="white" stopOpacity="0" />
-                        <stop offset="50%" stopColor="#52b37f" stopOpacity="0.8" />
-                        <stop offset="100%" stopColor="white" stopOpacity="0" />
-                      </linearGradient>
-                    </defs>
-                    {/* Arrow at start */}
-                    <path d="M 17 0 L 20 6 L 23 0" stroke="white" strokeWidth="1" fill="none" opacity="0.3" strokeLinecap="round" />
-                  </svg>
-                  <p className="text-center text-[10px] text-white/30 -mt-1">Geri bildirim döngüsü</p>
-                </div>
+                  </g>
+
+                  {/* Marka box */}
+                  <g className={`transition-all duration-700${isVisible ? ' opacity-100' : ' opacity-0'}`} style={{ transitionDelay: '800ms' }}>
+                    <rect x="289" y="60" width="56" height="52" rx="12" fill="white" fillOpacity="0.08" stroke="white" strokeOpacity="0.2" strokeWidth="1" />
+                    {/* Briefcase icon */}
+                    <rect x="303" y="82" width="28" height="18" rx="3" stroke="white" strokeWidth="1.2" fill="none" />
+                    <path d="M 311 82 L 311 78 Q 311 75 314 75 L 320 75 Q 323 75 323 78 L 323 82" stroke="white" strokeWidth="1.2" fill="none" />
+                  </g>
+
+                  {/* Labels */}
+                  <text x="43" y="128" textAnchor="middle" fill="white" fontSize="11" fontWeight="500">Tüketici</text>
+                  <text x="43" y="142" textAnchor="middle" fill="white" fillOpacity="0.4" fontSize="9">Şikayet yazar</text>
+
+                  <text x="180" y="128" textAnchor="middle" fill="white" fontSize="11" fontWeight="500">Superscore</text>
+                  <text x="180" y="142" textAnchor="middle" fill="white" fillOpacity="0.4" fontSize="9">Puan güncellenir</text>
+
+                  <text x="317" y="128" textAnchor="middle" fill="white" fontSize="11" fontWeight="500">Marka</text>
+                  <text x="317" y="142" textAnchor="middle" fill="white" fillOpacity="0.4" fontSize="9">Talepleri karşılar</text>
+
+                  {/* Bottom label */}
+                  <text x="180" y="185" textAnchor="middle" fill="white" fillOpacity="0.25" fontSize="9">Geri bildirim döngüsü</text>
+                </svg>
               </div>
             </div>
           </div>
