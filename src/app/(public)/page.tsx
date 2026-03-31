@@ -61,7 +61,7 @@ export default async function HomePage() {
                 <h3 className="font-superscore-bold text-lg text-[#1b1a1b] mb-1">İşletmenizi büyütmek mi istiyorsunuz?</h3>
                 <p className="text-sm text-[#1b1a1b]/70">Superscore&apos;daki yorumlarla itibarınızı güçlendirin.</p>
               </div>
-              <Link href="/kayit?tab=brand">
+              <Link href="/business/kayit">
                 <button className="px-6 py-3 bg-[#121511] text-white text-sm font-semibold rounded-full hover:bg-[#8f435c] transition-colors">
                   Başlayın
                 </button>
@@ -70,7 +70,7 @@ export default async function HomePage() {
             <div className="relative z-10 flex md:hidden flex-col items-center text-center px-6 pt-8 pb-28">
               <h3 className="font-superscore-bold text-xl text-[#1b1a1b] mb-2">İşletmenizi büyütmek mi istiyorsunuz?</h3>
               <p className="text-sm text-[#1b1a1b]/70 mb-5">Superscore&apos;daki yorumlarla itibarınızı güçlendirin.</p>
-              <Link href="/kayit?tab=brand">
+              <Link href="/business/kayit">
                 <button className="px-6 py-3 bg-[#121511] text-white text-sm font-semibold rounded-full hover:bg-[#8f435c] transition-colors">
                   Başlayın
                 </button>
