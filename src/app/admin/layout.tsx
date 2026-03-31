@@ -27,7 +27,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       const { data: { user: authUser } } = await supabase.auth.getUser();
       if (!authUser) { router.push('/giris'); return; }
       const { data } = await supabase.from('users').select('role').eq('id', authUser.id).single();
-      if (!data || (data as { role: string }).role !== 'super_admin') router.push('/panel');
+      if (!data || (data as { role: string }).role !== 'super_admin') router.push('/');
     }
     check();
   }, []);

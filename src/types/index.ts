@@ -64,6 +64,18 @@ export interface Brand {
   website: string | null;
   description: string | null;
   category: string;
+  sub_category: string | null;
+  category_tag: string | null;
+  // Extended profile fields (migration 004)
+  contact_email?: string | null;
+  phone?: string | null;
+  address?: string | null;
+  city?: string | null;
+  country?: string | null;
+  postcode?: string | null;
+  founded_year?: string | null;
+  employees?: string | null;
+  categories?: string[] | null;
   is_verified: boolean;
   is_subscribed: boolean;
   subscription_plan: SubscriptionPlan | null;
@@ -101,6 +113,7 @@ export interface Complaint {
   purchase_date: string | null;
   desired_resolution: string;
   is_public: boolean;
+  rating: number | null;
   resolved_at: string | null;
   created_at: string;
   updated_at: string;

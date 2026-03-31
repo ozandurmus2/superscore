@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
   if (!user) return NextResponse.json({ error: 'Giriş yapmanız gerekiyor' }, { status: 401 });
 
   const body = await request.json();
-  const { brand_id, title, description, category, order_number, purchase_date, desired_resolution, is_public } = body;
+  const { brand_id, title, description, category, order_number, purchase_date, desired_resolution, is_public, rating } = body;
 
   if (!brand_id || !title || !description || !desired_resolution) {
     return NextResponse.json({ error: 'Zorunlu alanları doldurun' }, { status: 400 });
@@ -50,6 +50,7 @@ export async function POST(request: NextRequest) {
       desired_resolution,
       is_public: is_public !== false,
       complaint_number: '',
+      rating: rating && rating >= 1 && rating <= 5 ? rating : null,
     })
     .select()
     .single();

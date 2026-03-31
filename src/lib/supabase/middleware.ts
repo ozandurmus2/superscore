@@ -31,12 +31,11 @@ export async function updateSession(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname;
 
-  // Protected routes - /panel/sikayet-yaz is allowed without auth (guest complaint flow)
-  const protectedPaths = ['/panel', '/marka-panel', '/admin'];
+  // Protected routes
+  const protectedPaths = ['/marka-panel', '/admin', '/users/settings'];
   const isProtected = protectedPaths.some((p) => pathname.startsWith(p));
-  const isGuestAllowed = pathname === '/panel/sikayet-yaz';
 
-  if (isProtected && !user && !isGuestAllowed) {
+  if (isProtected && !user) {
     const url = request.nextUrl.clone();
     url.pathname = '/giris';
     url.searchParams.set('redirect', pathname);
@@ -55,7 +54,7 @@ export async function updateSession(request: NextRequest) {
     const role = (profile as { role: string } | null)?.role;
     if (role === 'super_admin') url.pathname = '/admin';
     else if (role === 'brand_admin') url.pathname = '/marka-panel';
-    else url.pathname = '/panel';
+    else url.pathname = '/';
     return NextResponse.redirect(url);
   }
 

@@ -61,9 +61,9 @@ export function HeroSearch() {
 
   function goToComplaint(brandSlug?: string) {
     if (brandSlug) {
-      router.push(`/panel/sikayet-yaz?marka=${brandSlug}`);
+      router.push(`/sikayet-yaz?marka=${brandSlug}`);
     } else {
-      router.push(`/panel/sikayet-yaz?yeni=${encodeURIComponent(query)}`);
+      router.push(`/sikayet-yaz?yeni=${encodeURIComponent(query)}`);
     }
   }
 
@@ -74,23 +74,19 @@ export function HeroSearch() {
   }
 
   return (
-    <div className="max-w-xl mx-auto mb-8 relative" ref={dropdownRef}>
-      <div className="flex gap-2 bg-white rounded-xl p-2 shadow-lg">
-        <div className="flex-1 flex items-center gap-2 px-3">
-          <Search className="h-5 w-5 text-gray-400 flex-shrink-0" />
-          <input
-            ref={inputRef}
-            type="text"
-            placeholder="Şikayet yazacağınız markayı arayın..."
-            className="w-full py-2 text-gray-800 outline-none text-sm"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onFocus={() => query.length >= 2 && setShowDropdown(true)}
-          />
-          {loading && <Loader2 className="h-4 w-4 text-gray-400 animate-spin flex-shrink-0" />}
-        </div>
-        <Button
-          size="lg"
+    <div className="max-w-[580px] mx-auto mb-8 relative" ref={dropdownRef}>
+      <div className="flex items-center bg-white rounded-full px-5 py-1 shadow-[0_2px_12px_rgba(0,0,0,0.08)]">
+        <input
+          ref={inputRef}
+          type="text"
+          placeholder="Şirket veya kategori arayın"
+          className="w-full py-3 text-[#1b1a1b] outline-none text-base bg-transparent placeholder:text-gray-400"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          onFocus={() => query.length >= 2 && setShowDropdown(true)}
+        />
+        {loading && <Loader2 className="h-5 w-5 text-gray-400 animate-spin flex-shrink-0 mr-2" />}
+        <button
           onClick={() => {
             if (results.length > 0) {
               goToComplaint(results[0].slug);
@@ -100,14 +96,15 @@ export function HeroSearch() {
               inputRef.current?.focus();
             }
           }}
+          className="flex-shrink-0 w-10 h-10 rounded-full bg-[#1b1a1b] hover:bg-[#333] flex items-center justify-center transition-colors"
         >
-          Şikayet Yaz
-        </Button>
+          <Search className="h-4 w-4 text-white" />
+        </button>
       </div>
 
       {/* Search Results Dropdown */}
       {showDropdown && query.trim().length >= 2 && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl border z-50 overflow-hidden">
+        <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.12)] border border-gray-100 z-50 overflow-hidden">
           {results.length > 0 ? (
             <>
               {results.map((brand) => (
