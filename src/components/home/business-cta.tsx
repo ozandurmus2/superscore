@@ -21,12 +21,12 @@ export function BusinessCTA() {
       ([entry]) => {
         if (entry.isIntersecting) {
           const startTime = performance.now();
-          const duration = 3000; // 3 seconds - slow motion
+          const duration = 5000; // 5 seconds - very slow motion
           const animate = (now: number) => {
             const elapsed = now - startTime;
             const t = Math.min(elapsed / duration, 1);
-            // Ease out cubic for slow-motion stop effect
-            const eased = 1 - Math.pow(1 - t, 3);
+            // Ease out quint - starts normal, slows dramatically at end
+            const eased = 1 - Math.pow(1 - t, 5);
             setProgress(eased);
             if (t < 1) requestAnimationFrame(animate);
           };
@@ -58,7 +58,7 @@ export function BusinessCTA() {
               >
                 {BAR_DATA.map((height, i) => {
                   const spacing = 1415 / totalBars;
-                  const x = i * spacing + spacing / 2;
+                  const x = i * spacing;
                   const barProgress = Math.max(0, Math.min(1, (progress * totalBars - i) / 12));
                   const barHeight = (height / 100) * 380 * barProgress;
                   const y = 400 - barHeight;
@@ -66,12 +66,12 @@ export function BusinessCTA() {
                   return (
                     <rect
                       key={i}
-                      x={x}
+                      x={x + 1}
                       y={y}
-                      width={1.2}
+                      width={spacing - 2}
                       height={barHeight}
                       fill="#7CA355"
-                      opacity={0.4 + barProgress * 0.3}
+                      opacity={0.3 + barProgress * 0.3}
                     />
                   );
                 })}
