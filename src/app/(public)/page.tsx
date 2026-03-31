@@ -57,11 +57,11 @@ export default async function HomePage() {
         <div className="container mx-auto px-4">
           <div className="relative rounded-[32px] overflow-hidden bg-[#0a1a0f]">
             {/* Video Background - Desktop */}
-            <video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover hidden md:block">
+            <video autoPlay muted loop playsInline className="absolute inset-0 hidden md:block" style={{ width: '100%', height: '100%', objectFit: 'cover', transform: 'scale(1.5)', transformOrigin: 'center center' }}>
               <source src="/hero-bg.webm" type="video/webm" />
             </video>
             {/* Video Background - Mobile */}
-            <video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover md:hidden" style={{ objectPosition: 'center 65%', transform: 'scale(1.3)' }}>
+            <video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover md:hidden" style={{ objectPosition: 'center 75%', transform: 'scale(1.6)', transformOrigin: 'center bottom' }}>
               <source src="/hero-bg-mobile.webm" type="video/webm" />
             </video>
             {/* Overlay for readability */}
