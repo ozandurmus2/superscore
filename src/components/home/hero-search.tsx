@@ -75,12 +75,12 @@ export function HeroSearch() {
 
   return (
     <div className="max-w-[580px] mx-auto mb-8 relative" ref={dropdownRef}>
-      <div className="flex items-center bg-white rounded-full px-5 py-1 shadow-[0_2px_12px_rgba(0,0,0,0.08)]">
+      <div className="flex items-center bg-white/10 backdrop-blur-md border border-white/15 rounded-full px-5 py-1 shadow-[0_2px_24px_rgba(0,0,0,0.3)] hover:bg-white/15 transition-colors focus-within:bg-white/15 focus-within:border-white/25">
         <input
           ref={inputRef}
           type="text"
           placeholder="Şirket veya kategori arayın"
-          className="w-full py-3 text-[#1b1a1b] outline-none text-base bg-transparent placeholder:text-gray-400"
+          className="w-full py-3 text-white outline-none text-base bg-transparent placeholder:text-white/40"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => query.length >= 2 && setShowDropdown(true)}
@@ -96,9 +96,9 @@ export function HeroSearch() {
               inputRef.current?.focus();
             }
           }}
-          className="flex-shrink-0 w-10 h-10 rounded-full bg-[#1b1a1b] hover:bg-[#333] flex items-center justify-center transition-colors"
+          className="flex-shrink-0 w-10 h-10 rounded-full bg-white hover:bg-white/90 flex items-center justify-center transition-colors"
         >
-          <Search className="h-4 w-4 text-white" />
+          <Search className="h-4 w-4 text-[#0a0a0a]" />
         </button>
       </div>
 
