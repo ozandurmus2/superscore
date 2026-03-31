@@ -31,17 +31,17 @@ export default async function HomePage() {
       {/* Hero Banner */}
       <HeroBanner />
 
-      {/* Write a review CTA strip */}
+      {/* Write a complaint CTA strip */}
       <div className="bg-white py-4">
         <div className="container mx-auto px-4 flex items-center gap-4">
           <div className="flex-1 h-px bg-gray-200" />
           <Link
             href="/sikayet-yaz"
-            className="flex items-center gap-2 px-6 py-2.5 rounded-full border border-gray-200 bg-[#fbfbfb] hover:border-gray-300 transition-all text-sm"
+            className="flex items-center gap-2 px-6 py-2.5 rounded-full border border-gray-200 bg-[#fbfbfb] hover:border-gray-300 transition-all text-sm whitespace-nowrap"
           >
-            <span className="text-[#1b1a1b]">Son zamanlarda bir şey satın aldınız mı?</span>
-            <span className="text-[#3c57bc] font-medium">Bir yorum yazın</span>
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" className="text-[#1b1a1b]">
+            <span className="text-[#1b1a1b]">Yaşadığın sorunu markaya ilet</span>
+            <span className="text-[#3c57bc] font-medium">Şikayet Yaz</span>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" className="text-[#1b1a1b] flex-shrink-0">
               <path d="M12.192 7.533 8.277 3.66 8.944 3 14 8l-5.056 5-.667-.66 3.915-3.873H2v-.934h10.192Z" />
             </svg>
           </Link>
