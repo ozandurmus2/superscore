@@ -25,7 +25,8 @@ export function HeroBanner() {
           playsInline
           preload="auto"
           onLoadedData={() => setVideoLoaded(true)}
-          className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 min-w-full min-h-full w-auto h-auto transition-opacity duration-700 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
+          className={`w-full h-full object-cover transition-opacity duration-700 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
+          style={{ objectPosition: '70% center' }}
         >
           <source
             src="https://cdn.shopify.com/b/shopify-brochure2-assets/c6592ae0c066026c8de941bc859e4b9d.webm"
