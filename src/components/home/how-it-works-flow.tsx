@@ -60,27 +60,15 @@ export function HowItWorksFlow() {
               <div className="relative w-full max-w-[360px]">
                 <svg viewBox="0 0 360 200" fill="none" className="w-full">
                   <defs>
-                    {/* Glow gradient for the flowing particle */}
-                    <linearGradient id="flow-glow">
-                      <stop offset="0%" stopColor="white" stopOpacity="0" />
-                      <stop offset="50%" stopColor="#52b37f" stopOpacity="0.9" />
-                      <stop offset="100%" stopColor="white" stopOpacity="0" />
-                    </linearGradient>
-                    <linearGradient id="return-glow">
-                      <stop offset="0%" stopColor="white" stopOpacity="0" />
-                      <stop offset="50%" stopColor="#52b37f" stopOpacity="0.8" />
-                      <stop offset="100%" stopColor="white" stopOpacity="0" />
-                    </linearGradient>
-                    {/* Contour glow gradient for rotating border */}
-                    <linearGradient id="contour-glow">
-                      <stop offset="0%" stopColor="white" stopOpacity="0" />
-                      <stop offset="40%" stopColor="white" stopOpacity="0.7" />
-                      <stop offset="60%" stopColor="white" stopOpacity="0.7" />
-                      <stop offset="100%" stopColor="white" stopOpacity="0" />
-                    </linearGradient>
-                    {/* Glow filter for Superscore box */}
-                    <filter id="ss-glow" x="-50%" y="-50%" width="200%" height="200%">
-                      <feGaussianBlur stdDeviation="3" result="blur" />
+                    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+                      <feGaussianBlur stdDeviation="4" result="blur" />
+                      <feMerge>
+                        <feMergeNode in="blur" />
+                        <feMergeNode in="SourceGraphic" />
+                      </feMerge>
+                    </filter>
+                    <filter id="glow-sm" x="-50%" y="-50%" width="200%" height="200%">
+                      <feGaussianBlur stdDeviation="2" result="blur" />
                       <feMerge>
                         <feMergeNode in="blur" />
                         <feMergeNode in="SourceGraphic" />
@@ -88,123 +76,63 @@ export function HowItWorksFlow() {
                     </filter>
                   </defs>
 
-                  {/* === LINE 1: Tüketici → Superscore (goes BEHIND the SS box) === */}
-                  <path
-                    d="M 75 86 L 140 86"
-                    stroke="white"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    opacity="0.12"
-                  />
-                  <path
-                    d="M 75 86 L 140 86"
-                    stroke="url(#flow-glow)"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeDasharray="15 100"
-                    className={isVisible ? 'animate-dash-flow' : ''}
-                  />
+                  {/* === FULL FLOW PATH (single continuous path for the light to travel) === */}
+                  {/* Tüketici → SS box left edge → around SS box border (top) → SS box right edge → Marka */}
 
-                  {/* === LINE 2: Superscore → Marka (starts from center-right of SS box) === */}
-                  <path
-                    d="M 220 86 L 285 86"
-                    stroke="white"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    opacity="0.12"
-                  />
-                  <path
-                    d="M 220 86 L 285 86"
-                    stroke="url(#flow-glow)"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeDasharray="15 100"
-                    className={isVisible ? 'animate-dash-flow-delay' : ''}
-                  />
+                  {/* LINE: Tüketici → SS box (behind box) */}
+                  <line x1="75" y1="86" x2="140" y2="86" stroke="white" strokeWidth="1" opacity="0.1" />
+                  {/* Flowing light on Tüketici → SS */}
+                  <line x1="75" y1="86" x2="140" y2="86" stroke="white" strokeWidth="2" strokeDasharray="12 80" className={isVisible ? 'animate-flow-line-1' : ''} opacity="0" filter="url(#glow-sm)" />
 
-                  {/* Arrow head before Marka */}
-                  <path d="M 281 82 L 288 86 L 281 90" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity="0.5" />
+                  {/* LINE: SS box → Marka */}
+                  <line x1="220" y1="86" x2="285" y2="86" stroke="white" strokeWidth="1" opacity="0.1" />
+                  {/* Flowing light on SS → Marka */}
+                  <line x1="220" y1="86" x2="285" y2="86" stroke="white" strokeWidth="2" strokeDasharray="12 80" className={isVisible ? 'animate-flow-line-2' : ''} opacity="0" filter="url(#glow-sm)" />
 
-                  {/* === SUPERSCORE BOX CONTOUR: rotating white/gray border === */}
-                  {/* Base subtle border - always visible */}
-                  <rect
-                    x="140" y="60" width="80" height="52" rx="12"
-                    stroke="white"
-                    strokeWidth="1"
-                    fill="none"
-                    opacity="0.15"
-                  />
-                  {/* Animated rotating glow on border */}
-                  <rect
-                    x="140" y="60" width="80" height="52" rx="12"
-                    stroke="url(#contour-glow)"
-                    strokeWidth="2"
-                    fill="none"
-                    strokeDasharray="30 234"
-                    className={isVisible ? 'animate-contour-spin' : ''}
-                    filter="url(#ss-glow)"
-                  />
+                  {/* Arrow head → Marka */}
+                  <path d="M 282 82.5 L 288 86 L 282 89.5" stroke="white" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" opacity="0.4" />
 
-                  {/* Return arc - bottom dashed */}
-                  <path
-                    d="M 310 100 Q 310 165 180 165 Q 50 165 50 100"
-                    stroke="white"
-                    strokeWidth="1"
-                    strokeLinecap="round"
-                    strokeDasharray="4 6"
-                    opacity="0.15"
-                  />
-                  <path
-                    d="M 310 100 Q 310 165 180 165 Q 50 165 50 100"
-                    stroke="url(#return-glow)"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeDasharray="20 350"
-                    className={isVisible ? 'animate-dash-flow-slow' : ''}
-                  />
-                  {/* Return arrow */}
-                  <path d="M 47 104 L 50 96 L 53 104" stroke="white" strokeWidth="1" strokeLinecap="round" opacity="0.3" />
+                  {/* === SUPERSCORE BOX BORDER GLOW === */}
+                  {/* Continuous subtle border */}
+                  <rect x="140" y="60" width="80" height="52" rx="12" stroke="white" strokeWidth="0.5" fill="none" opacity="0.1" />
+                  {/* Animated light traveling around the border - clockwise */}
+                  <rect x="140" y="60" width="80" height="52" rx="12" stroke="white" strokeWidth="1.5" fill="none" strokeDasharray="40 224" className={isVisible ? 'animate-border-flow' : ''} opacity="0" filter="url(#glow)" />
 
-                  {/* === NODE BOXES === */}
+                  {/* === RETURN ARC (bottom) === */}
+                  <path d="M 310 100 Q 310 162 180 162 Q 50 162 50 100" stroke="white" strokeWidth="0.8" strokeLinecap="round" strokeDasharray="3 5" opacity="0.1" />
+                  <path d="M 310 100 Q 310 162 180 162 Q 50 162 50 100" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeDasharray="15 350" className={isVisible ? 'animate-flow-return' : ''} opacity="0" filter="url(#glow-sm)" />
+                  <path d="M 47 103 L 50 96 L 53 103" stroke="white" strokeWidth="0.8" strokeLinecap="round" opacity="0.2" />
 
-                  {/* Tüketici box */}
+                  {/* === NODES === */}
+
+                  {/* Tüketici */}
                   <g className={`transition-all duration-700${isVisible ? ' opacity-100' : ' opacity-0'}`} style={{ transitionDelay: '400ms' }}>
-                    <rect x="15" y="60" width="56" height="52" rx="12" fill="white" fillOpacity="0.08" stroke="white" strokeOpacity="0.2" strokeWidth="1" />
-                    {/* Person icon */}
-                    <circle cx="43" cy="78" r="6" stroke="white" strokeWidth="1.2" fill="none" />
-                    <path d="M 33 98 Q 33 90 43 90 Q 53 90 53 98" stroke="white" strokeWidth="1.2" fill="none" strokeLinecap="round" />
+                    <rect x="15" y="60" width="56" height="52" rx="12" fill="white" fillOpacity="0.06" stroke="white" strokeOpacity="0.15" strokeWidth="0.8" />
+                    <circle cx="43" cy="78" r="6" stroke="white" strokeWidth="1" fill="none" opacity="0.7" />
+                    <path d="M 33 98 Q 33 90 43 90 Q 53 90 53 98" stroke="white" strokeWidth="1" fill="none" strokeLinecap="round" opacity="0.7" />
                   </g>
 
-                  {/* Superscore box */}
+                  {/* Superscore */}
                   <g className={`transition-all duration-700${isVisible ? ' opacity-100' : ' opacity-0'}`} style={{ transitionDelay: '600ms' }}>
                     <rect x="140" y="60" width="80" height="52" rx="12" fill="#52b37f" />
-                    {/* Star icon (white) - using a 5-pointed star path */}
-                    <path
-                      d="M 180 70 L 183.5 79 L 193 79.5 L 186 85.5 L 188 95 L 180 90 L 172 95 L 174 85.5 L 167 79.5 L 176.5 79 Z"
-                      fill="white"
-                    />
+                    <path d="M 180 70 L 183.5 79 L 193 79.5 L 186 85.5 L 188 95 L 180 90 L 172 95 L 174 85.5 L 167 79.5 L 176.5 79 Z" fill="white" />
                   </g>
 
-                  {/* Marka box */}
+                  {/* Marka */}
                   <g className={`transition-all duration-700${isVisible ? ' opacity-100' : ' opacity-0'}`} style={{ transitionDelay: '800ms' }}>
-                    <rect x="289" y="60" width="56" height="52" rx="12" fill="white" fillOpacity="0.08" stroke="white" strokeOpacity="0.2" strokeWidth="1" />
-                    {/* Briefcase icon */}
-                    <rect x="303" y="82" width="28" height="18" rx="3" stroke="white" strokeWidth="1.2" fill="none" />
-                    <path d="M 311 82 L 311 78 Q 311 75 314 75 L 320 75 Q 323 75 323 78 L 323 82" stroke="white" strokeWidth="1.2" fill="none" />
+                    <rect x="289" y="60" width="56" height="52" rx="12" fill="white" fillOpacity="0.06" stroke="white" strokeOpacity="0.15" strokeWidth="0.8" />
+                    <rect x="303" y="82" width="28" height="18" rx="3" stroke="white" strokeWidth="1" fill="none" opacity="0.7" />
+                    <path d="M 311 82 L 311 78 Q 311 75 314 75 L 320 75 Q 323 75 323 78 L 323 82" stroke="white" strokeWidth="1" fill="none" opacity="0.7" />
                   </g>
 
                   {/* Labels */}
                   <text x="43" y="128" textAnchor="middle" fill="white" fontSize="11" fontWeight="500">Tüketici</text>
-                  <text x="43" y="142" textAnchor="middle" fill="white" fillOpacity="0.4" fontSize="9">Şikayet yazar</text>
-
+                  <text x="43" y="141" textAnchor="middle" fill="white" fillOpacity="0.35" fontSize="9">Şikayet yazar</text>
                   <text x="180" y="128" textAnchor="middle" fill="white" fontSize="11" fontWeight="500">Superscore</text>
-                  <text x="180" y="142" textAnchor="middle" fill="white" fillOpacity="0.4" fontSize="9">Puan güncellenir</text>
-
+                  <text x="180" y="141" textAnchor="middle" fill="white" fillOpacity="0.35" fontSize="9">Puan güncellenir</text>
                   <text x="317" y="128" textAnchor="middle" fill="white" fontSize="11" fontWeight="500">Marka</text>
-                  <text x="317" y="142" textAnchor="middle" fill="white" fillOpacity="0.4" fontSize="9">Talepleri karşılar</text>
-
-                  {/* Bottom label */}
-                  <text x="180" y="185" textAnchor="middle" fill="white" fillOpacity="0.25" fontSize="9">Geri bildirim döngüsü</text>
+                  <text x="317" y="141" textAnchor="middle" fill="white" fillOpacity="0.35" fontSize="9">Talepleri karşılar</text>
+                  <text x="180" y="182" textAnchor="middle" fill="white" fillOpacity="0.2" fontSize="9">Geri bildirim döngüsü</text>
                 </svg>
               </div>
             </div>

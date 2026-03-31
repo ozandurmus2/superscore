@@ -164,13 +164,43 @@ body {
   animation: connectorGlow 2s ease-in-out infinite;
 }
 
-/* Contour spin - rotating dash around rect border */
-@keyframes contourSpin {
-  0% { stroke-dashoffset: 0; }
-  100% { stroke-dashoffset: -264; }
+/* Flow diagram animations */
+@keyframes flowLine1 {
+  0% { stroke-dashoffset: 92; opacity: 0; }
+  10% { opacity: 0.8; }
+  90% { opacity: 0.8; }
+  100% { stroke-dashoffset: -92; opacity: 0; }
 }
-.animate-contour-spin {
-  animation: contourSpin 3s linear infinite;
+.animate-flow-line-1 {
+  animation: flowLine1 2.5s ease-in-out infinite;
+}
+
+@keyframes flowLine2 {
+  0% { stroke-dashoffset: 65; opacity: 0; }
+  10% { opacity: 0.8; }
+  90% { opacity: 0.8; }
+  100% { stroke-dashoffset: -65; opacity: 0; }
+}
+.animate-flow-line-2 {
+  animation: flowLine2 2.5s ease-in-out 1.2s infinite;
+}
+
+@keyframes borderFlow {
+  0% { stroke-dashoffset: 0; opacity: 0.6; }
+  100% { stroke-dashoffset: -264; opacity: 0.6; }
+}
+.animate-border-flow {
+  animation: borderFlow 4s linear infinite;
+}
+
+@keyframes flowReturn {
+  0% { stroke-dashoffset: 365; opacity: 0; }
+  10% { opacity: 0.5; }
+  90% { opacity: 0.5; }
+  100% { stroke-dashoffset: -365; opacity: 0; }
+}
+.animate-flow-return {
+  animation: flowReturn 5s ease-in-out 2s infinite;
 }
 
 /* Hero dark animated background */
