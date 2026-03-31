@@ -49,16 +49,17 @@ export function BusinessCTA() {
 
           {/* SVG Bar Chart Background - thin lines */}
           <div className="absolute inset-0 overflow-hidden">
-            <div className="w-[200%] md:w-full h-full absolute -left-1/2 md:left-0">
+            <div className="w-full h-full absolute left-0">
               <svg
-                viewBox="0 0 1415 400"
+                viewBox="0 0 890 400"
                 fill="none"
                 preserveAspectRatio="none"
                 className="w-full absolute bottom-0 h-full"
               >
                 {BAR_DATA.map((height, i) => {
-                  const spacing = 1415 / totalBars;
-                  const x = i * spacing;
+                  const barW = 1.5;
+                  const gap = 7.4;
+                  const x = i * (barW + gap);
                   const barProgress = Math.max(0, Math.min(1, (progress * totalBars - i) / 12));
                   const barHeight = (height / 100) * 380 * barProgress;
                   const y = 400 - barHeight;
@@ -66,9 +67,9 @@ export function BusinessCTA() {
                   return (
                     <rect
                       key={i}
-                      x={x + 1}
+                      x={x}
                       y={y}
-                      width={spacing - 2}
+                      width={barW}
                       height={barHeight}
                       fill="#7CA355"
                       opacity={0.3 + barProgress * 0.3}
