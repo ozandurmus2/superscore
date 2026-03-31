@@ -228,6 +228,77 @@ export default function NasilCalisirPage() {
         </div>
       </section>
 
+      {/* ═══ SOLUTIONS - 3 columns with images ═══ */}
+      <section className="relative bg-[#f5f3eb]">
+        {/* Top curved border overlay */}
+        <div className="absolute top-0 left-0 right-0 h-[60px] md:h-[80px] overflow-hidden" style={{ marginTop: '-1px' }}>
+          <div className="w-full h-full bg-[#0a0f08]" style={{ borderRadius: '0 0 40px 40px' }} />
+        </div>
+
+        <div className="container mx-auto px-4 pt-24 md:pt-32 pb-20 md:pb-28">
+          <div className="mb-12 md:mb-16 max-w-2xl">
+            <p className="text-[#1b1a1b]/40 text-xs tracking-[0.2em] uppercase mb-3 font-semibold">Çözümler</p>
+            <h2 className="text-2xl md:text-[36px] lg:text-[42px] text-[#1b1a1b] leading-[1.1] mb-4" style={{ fontWeight: 450 }}>
+              Tüm çözüm ve değerlendirme yöntemleri için tek platform
+            </h2>
+            <p className="text-[#1b1a1b]/45 text-sm md:text-[15px] leading-relaxed">
+              Tüketici hakları, online alışveriş güveni ve fiziki mağaza deneyimi için tasarlanmış kapsamlı çözümlerle şikayetlerinizi çözüme kavuşturun.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {[
+              {
+                img: '/solution-tuketici.jpg',
+                title: 'Tüketiciler',
+                desc: 'Satın aldığınız ürün veya hizmetten memnun kalmadığınızda şikayetinizi yazın. Superscore, markayla aranızda köprü kurarak sorununuzun gerçekten çözülmesini sağlar. AI doğrulaması ile çözüm güvence altındadır.',
+                link: '/sikayet-yaz',
+                linkText: 'Şikayet yazın',
+              },
+              {
+                img: '/solution-online.jpg',
+                title: 'Online Alışveriş Siteleri',
+                desc: 'E-ticaret sitelerinden yapılan alışverişlerde yaşanan kargo, iade ve ürün sorunlarını Superscore üzerinden çözüme kavuşturun. Sipariş doğrulama entegrasyonu ile süreç hızlanır, marka hızlıca aksiyon alır.',
+                link: '/sikayet-yaz',
+                linkText: 'Hemen başlayın',
+              },
+              {
+                img: '/solution-fiziki.jpg',
+                title: 'Fiziki Mağazalar',
+                desc: 'Mağazadan aldığınız ürün veya aldığınız hizmette yaşadığınız sorunları iletin. Markalar Superscore puanını yükseltmek için fiziki mağaza şikayetlerini de hızla çözer, hediye ve kupon sunabilir.',
+                link: '/sikayet-yaz',
+                linkText: 'Değerlendirme yazın',
+              },
+            ].map((item, i) => (
+              <div key={i} className="bg-[#f5f3eb] rounded-2xl overflow-hidden">
+                {/* Image */}
+                <div className="aspect-[4/3] overflow-hidden rounded-2xl border border-[#e5e2d8]">
+                  <Image
+                    src={item.img}
+                    alt={item.title}
+                    width={600}
+                    height={450}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                {/* Content */}
+                <div className="pt-6 pb-2">
+                  <h3 className="text-[#1b1a1b] text-xl md:text-2xl mb-3" style={{ fontWeight: 500 }}>
+                    {item.title}
+                  </h3>
+                  <p className="text-[#1b1a1b]/50 text-sm leading-relaxed mb-5">
+                    {item.desc}
+                  </p>
+                  <Link href={item.link} className="text-[#1b1a1b] text-sm underline underline-offset-4 decoration-1 hover:text-[#52b37f] transition-colors">
+                    {item.linkText}
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ═══ HOW IT WORKS STEPS ═══ */}
       <section ref={steps.ref} className="py-20 md:py-28 bg-white">
         <div className="container mx-auto px-4">
