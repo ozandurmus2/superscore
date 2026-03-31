@@ -5,61 +5,47 @@ import { HeroSearch } from './hero-search';
 export function HeroBanner() {
   return (
     <section className="relative overflow-hidden bg-[#f5f1eb] min-h-[420px] md:min-h-[480px] flex items-center justify-center">
-      {/* Animated Background Shapes - div based for mobile compatibility */}
+      {/* Animated Background Shapes */}
       <div className="absolute inset-0 pointer-events-none">
 
         {/* Yellow blob - bottom left */}
         <div
-          className="absolute animate-shape-yellow"
+          className="absolute w-[120px] h-[120px] md:w-[280px] md:h-[280px] lg:w-[360px] lg:h-[360px] animate-shape-yellow"
           style={{
-            bottom: '-8%',
-            left: '-6%',
-            width: 'clamp(180px, 30vw, 360px)',
-            height: 'clamp(180px, 30vw, 360px)',
+            bottom: '-15px',
+            left: '-15px',
             background: '#ffe400',
             borderRadius: '30% 70% 60% 40% / 50% 30% 70% 50%',
-            transformOrigin: 'center center',
           }}
         />
 
-        {/* Green shape - right side */}
+        {/* Green triangle - bottom right */}
         <div
-          className="absolute animate-shape-green"
+          className="absolute w-[100px] h-[120px] md:w-[220px] md:h-[260px] lg:w-[300px] lg:h-[340px] animate-shape-green"
           style={{
-            bottom: '-4%',
-            right: '-4%',
-            width: 'clamp(140px, 25vw, 300px)',
-            height: 'clamp(160px, 28vw, 340px)',
+            bottom: '-10px',
+            right: '-10px',
             background: '#04da8d',
-            borderRadius: '50% 50% 20% 20%',
             clipPath: 'polygon(50% 0%, 100% 100%, 0% 100%)',
-            transformOrigin: 'center center',
           }}
         />
 
-        {/* Orange circle - top */}
+        {/* Orange circle - top center */}
         <div
-          className="absolute animate-shape-orange"
+          className="absolute w-[100px] h-[100px] md:w-[200px] md:h-[200px] lg:w-[280px] lg:h-[280px] left-1/2 -translate-x-1/2 animate-shape-orange"
           style={{
-            top: '-12%',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            width: 'clamp(140px, 22vw, 280px)',
-            height: 'clamp(140px, 22vw, 280px)',
+            top: '-30px',
             background: '#fd791a',
             borderRadius: '50%',
-            transformOrigin: 'center center',
           }}
         />
 
         {/* Small purple accent - top left */}
         <div
-          className="absolute animate-float-1"
+          className="absolute w-[28px] h-[28px] md:w-[60px] md:h-[60px] animate-float-1"
           style={{
-            top: '15%',
-            left: '8%',
-            width: 'clamp(40px, 6vw, 80px)',
-            height: 'clamp(40px, 6vw, 80px)',
+            top: '18%',
+            left: '10%',
             background: '#819cf3',
             borderRadius: '40% 60% 50% 50% / 60% 40% 60% 40%',
             opacity: 0.6,
@@ -68,21 +54,19 @@ export function HeroBanner() {
 
         {/* Small pink accent - right */}
         <div
-          className="absolute animate-float-2"
+          className="absolute w-[22px] h-[22px] md:w-[50px] md:h-[50px] animate-float-2"
           style={{
-            top: '25%',
-            right: '10%',
-            width: 'clamp(30px, 5vw, 60px)',
-            height: 'clamp(30px, 5vw, 60px)',
+            top: '28%',
+            right: '12%',
             background: '#f95a98',
             borderRadius: '50%',
             opacity: 0.5,
           }}
         />
 
-        {/* Dotted ring decoration - center left */}
+        {/* Dotted ring - center left (desktop only) */}
         <div
-          className="absolute animate-spin-slow hidden md:block"
+          className="absolute hidden md:block animate-spin-slow"
           style={{
             top: '30%',
             left: '12%',
@@ -93,14 +77,12 @@ export function HeroBanner() {
           }}
         />
 
-        {/* Dotted ring - bottom right area */}
+        {/* Dotted ring - bottom right */}
         <div
-          className="absolute animate-spin-slow"
+          className="absolute w-[50px] h-[50px] md:w-[100px] md:h-[100px] animate-spin-slow"
           style={{
-            bottom: '20%',
-            right: '15%',
-            width: 'clamp(60px, 8vw, 120px)',
-            height: 'clamp(60px, 8vw, 120px)',
+            bottom: '22%',
+            right: '16%',
             border: '2px dashed rgba(27, 26, 27, 0.06)',
             borderRadius: '50%',
             animationDirection: 'reverse',
