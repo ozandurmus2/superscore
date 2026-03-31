@@ -5,6 +5,7 @@ import { HeroBanner } from '@/components/home/hero-banner';
 import { CategorySlider } from '@/components/home/category-slider';
 import { BestInCategory } from '@/components/home/best-in-category';
 import { HowItWorksFlow } from '@/components/home/how-it-works-flow';
+import { BusinessCTA } from '@/components/home/business-cta';
 import { COMPLAINT_STATUS_LABELS, COMPLAINT_STATUS_COLORS } from '@/types';
 import { formatRelativeTime } from '@/lib/utils';
 import { ArrowRight, PenSquare } from 'lucide-react';
@@ -52,42 +53,8 @@ export default async function HomePage() {
       {/* Category Slider */}
       <CategorySlider />
 
-      {/* Business CTA Banner - Pink */}
-      <section className="bg-white py-6 md:py-8">
-        <div className="container mx-auto px-4">
-          <div className="relative bg-[#fadee8] rounded-[32px] overflow-hidden">
-            <div className="relative z-10 hidden md:flex items-center justify-between px-8 py-6">
-              <div>
-                <h3 className="font-superscore-bold text-lg text-[#1b1a1b] mb-1">İşletmenizi büyütmek mi istiyorsunuz?</h3>
-                <p className="text-sm text-[#1b1a1b]/70">Superscore&apos;daki yorumlarla itibarınızı güçlendirin.</p>
-              </div>
-              <Link href="/business/kayit">
-                <button className="px-6 py-3 bg-[#121511] text-white text-sm font-semibold rounded-full hover:bg-[#8f435c] transition-colors">
-                  Başlayın
-                </button>
-              </Link>
-            </div>
-            <div className="relative z-10 flex md:hidden flex-col items-center text-center px-6 pt-8 pb-28">
-              <h3 className="font-superscore-bold text-xl text-[#1b1a1b] mb-2">İşletmenizi büyütmek mi istiyorsunuz?</h3>
-              <p className="text-sm text-[#1b1a1b]/70 mb-5">Superscore&apos;daki yorumlarla itibarınızı güçlendirin.</p>
-              <Link href="/business/kayit">
-                <button className="px-6 py-3 bg-[#121511] text-white text-sm font-semibold rounded-full hover:bg-[#8f435c] transition-colors">
-                  Başlayın
-                </button>
-              </Link>
-            </div>
-            <div className="absolute bottom-0 left-0 right-0 z-0 flex justify-center md:justify-end md:pr-12">
-              <svg viewBox="0 0 504 100" className="w-[280px] md:w-[300px] h-auto" preserveAspectRatio="none">
-                <rect x="0" y="76" width="88" height="24" rx="6" fill="#f6c8d4" />
-                <rect x="104" y="56" width="88" height="44" rx="6" fill="#f6c8d4" />
-                <rect x="208" y="42" width="88" height="58" rx="6" fill="#f6c8d4" />
-                <rect x="312" y="22" width="88" height="78" rx="6" fill="#f6c8d4" />
-                <rect x="416" y="4" width="88" height="96" rx="6" fill="#f6c8d4" />
-              </svg>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Business CTA Banner */}
+      <BusinessCTA />
 
       {/* Best in Category */}
       <BestInCategory />
