@@ -6,26 +6,19 @@ import { CategorySlider } from '@/components/home/category-slider';
 import { BestInCategory } from '@/components/home/best-in-category';
 import { HowItWorksFlow } from '@/components/home/how-it-works-flow';
 import { BusinessCTA } from '@/components/home/business-cta';
-import { COMPLAINT_STATUS_LABELS, COMPLAINT_STATUS_COLORS } from '@/types';
 import { formatRelativeTime } from '@/lib/utils';
-import { ArrowRight, PenSquare } from 'lucide-react';
-import type { Brand, Complaint } from '@/types';
+import { ArrowRight } from 'lucide-react';
+import type { Complaint } from '@/types';
 
 export default async function HomePage() {
   const supabase = await createClient();
 
-  const { data: brands } = await supabase
-    .from('brands')
-    .select('*')
-    .order('superscore', { ascending: false })
-    .limit(6);
-
   const { data: complaints } = await supabase
     .from('complaints')
-    .select('*, brand:brands(name, slug)')
+    .select('*, brand:brands(name, slug), user:users(full_name), reviews:reviews(rating)')
     .eq('is_public', true)
     .order('created_at', { ascending: false })
-    .limit(5);
+    .limit(8);
 
   return (
     <div>
@@ -118,65 +111,8 @@ export default async function HomePage() {
       {/* Superscore Nedir? */}
       <HowItWorksFlow />
 
-      {/* Featured Brands - Trustpilot card style */}
-      {(brands as Brand[])?.length > 0 && (
-        <section className="bg-white py-10">
-          <div className="container mx-auto px-4">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="font-superscore-bold text-xl md:text-2xl text-[#1b1a1b]">Öne Çıkan Markalar</h2>
-              <Link href="/markalar" className="text-sm font-medium text-[#1b1a1b] hover:underline flex items-center gap-1">
-                Tümünü Gör <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
-            <div
-              className="flex lg:grid lg:grid-cols-3 gap-4 overflow-x-auto pb-2 snap-x snap-mandatory scroll-smooth"
-              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-            >
-              {(brands as Brand[]).map((brand) => (
-                <Link key={brand.id} href={`/markalar/${brand.slug}`} className="flex-shrink-0 w-[75vw] sm:w-[45vw] lg:w-auto snap-start">
-                  <div className="border border-gray-200 rounded-2xl p-5 hover:shadow-md hover:border-gray-300 transition-all h-full">
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-full bg-[#1b1a1b] flex items-center justify-center text-white font-bold text-lg">
-                          {brand.name.charAt(0)}
-                        </div>
-                        <div>
-                          <h3 className="font-semibold text-sm text-[#1b1a1b]">{brand.name}</h3>
-                          <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded">{brand.category}</span>
-                        </div>
-                      </div>
-                      {/* Superscore circle */}
-                      <div className="relative w-11 h-11 flex-shrink-0">
-                        <svg viewBox="0 0 44 44" className="w-full h-full -rotate-90">
-                          <circle cx="22" cy="22" r="18" fill="none" stroke="#e5e7eb" strokeWidth="3" />
-                          <circle
-                            cx="22" cy="22" r="18" fill="none"
-                            stroke={brand.superscore >= 70 ? '#52b37f' : brand.superscore >= 40 ? '#f7d047' : '#eb4b34'}
-                            strokeWidth="3"
-                            strokeLinecap="round"
-                            strokeDasharray={`${(brand.superscore / 100) * 113} 113`}
-                          />
-                        </svg>
-                        <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-[#1b1a1b]">{brand.superscore}</span>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3 text-xs text-gray-500">
-                      <span>{brand.total_complaints} şikayet</span>
-                      <span>{brand.resolved_complaints} çözülen</span>
-                      {brand.avg_rating && (
-                        <StarRating rating={brand.avg_rating} size="xs" showScore />
-                      )}
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Recent Complaints - Same card style */}
-      {(complaints as (Complaint & { brand: { name: string; slug: string } })[])?.length > 0 && (
+      {/* Recent Complaints - Trustpilot review card style */}
+      {(complaints as (Complaint & { brand: { name: string; slug: string }; user: { full_name: string } | null; reviews: { rating: number }[] })[])?.length > 0 && (
         <section className="bg-white py-10">
           <div className="container mx-auto px-4">
             <div className="flex items-center justify-between mb-6">
@@ -186,20 +122,36 @@ export default async function HomePage() {
               </Link>
             </div>
             <div
-              className="flex lg:grid lg:grid-cols-3 gap-4 overflow-x-auto pb-2 snap-x snap-mandatory scroll-smooth"
+              className="flex lg:grid lg:grid-cols-4 gap-4 overflow-x-auto pb-2 snap-x snap-mandatory scroll-smooth"
               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
-              {(complaints as (Complaint & { brand: { name: string; slug: string } })[]).map((c) => (
-                <Link key={c.id} href={`/sikayetler/${c.id}`} className="flex-shrink-0 w-[80vw] sm:w-[45vw] lg:w-auto snap-start">
-                  <div className="border border-gray-200 rounded-2xl p-5 hover:shadow-md hover:border-gray-300 transition-all h-full">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="text-xs text-gray-400 font-mono">{c.complaint_number}</span>
-                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${COMPLAINT_STATUS_COLORS[c.status]}`}>
-                        {COMPLAINT_STATUS_LABELS[c.status]}
-                      </span>
+              {(complaints as (Complaint & { brand: { name: string; slug: string }; user: { full_name: string } | null; reviews: { rating: number }[] })[]).map((c) => (
+                <Link key={c.id} href={`/sikayetler/${c.id}`} className="flex-shrink-0 w-[75vw] sm:w-[45vw] lg:w-auto snap-start">
+                  <div className="border border-gray-200 rounded-2xl p-5 hover:shadow-md hover:border-gray-300 transition-all h-full flex flex-col">
+                    {/* User info + rating */}
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-9 h-9 rounded-full bg-[#1b1a1b] flex items-center justify-center text-white font-bold text-xs flex-shrink-0">
+                        {(c.user?.full_name || 'A').charAt(0).toUpperCase()}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="font-medium text-sm text-[#1b1a1b] truncate">{c.user?.full_name || 'Anonim'}</p>
+                        <StarRating rating={c.rating || c.reviews?.[0]?.rating || 0} size="xs" />
+                      </div>
                     </div>
-                    <h3 className="font-semibold text-sm text-[#1b1a1b] mb-1">{c.title}</h3>
-                    <p className="text-xs text-gray-500">{c.brand?.name} · {formatRelativeTime(c.created_at)}</p>
+                    {/* Complaint text */}
+                    <p className="text-sm text-[#1b1a1b] leading-relaxed mb-4 flex-1 line-clamp-4">
+                      {c.description}
+                    </p>
+                    {/* Brand info */}
+                    <div className="flex items-center gap-2 pt-3 border-t border-gray-100">
+                      <div className="w-7 h-7 rounded bg-gray-100 flex items-center justify-center text-[#1b1a1b] font-bold text-[10px] flex-shrink-0">
+                        {c.brand?.name?.charAt(0) || '?'}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-xs font-medium text-[#1b1a1b] truncate">{c.brand?.name}</p>
+                        <p className="text-[10px] text-gray-400">{formatRelativeTime(c.created_at)}</p>
+                      </div>
+                    </div>
                   </div>
                 </Link>
               ))}
