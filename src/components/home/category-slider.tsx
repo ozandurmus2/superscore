@@ -92,7 +92,7 @@ export function CategorySlider() {
 
             {/* See more button */}
             <Link
-              href="/markalar"
+              href="/kategoriler"
               className="px-5 py-2 text-sm font-medium text-[#3c57bc] border border-[#3c57bc] rounded-full hover:border-transparent hover:bg-[#f2f5fe] hover:text-[#2e2f2a] transition-all"
             >
               Tümünü Gör
