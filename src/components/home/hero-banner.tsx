@@ -14,7 +14,7 @@ export function HeroBanner() {
   }, []);
 
   return (
-    <section className="relative overflow-hidden bg-[#0a0a0a] min-h-[420px] md:min-h-[500px] flex items-center justify-center">
+    <section className="relative overflow-hidden bg-[#0a0a0a] min-h-[480px] md:min-h-[540px] flex items-center justify-center">
       {/* Video Background */}
       <div className="absolute inset-0 w-full h-full overflow-hidden">
         <video
@@ -25,7 +25,7 @@ export function HeroBanner() {
           playsInline
           preload="auto"
           onLoadedData={() => setVideoLoaded(true)}
-          className={`w-full h-full object-cover object-[70%_bottom] transition-opacity duration-700 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
+          className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 min-w-full min-h-full w-auto h-auto transition-opacity duration-700 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
         >
           <source
             src="https://cdn.shopify.com/b/shopify-brochure2-assets/c6592ae0c066026c8de941bc859e4b9d.webm"
@@ -35,7 +35,7 @@ export function HeroBanner() {
       </div>
 
       {/* Dark overlay for readability */}
-      <div className="absolute inset-0 bg-black/40" />
+      <div className="absolute inset-0 bg-black/35" />
 
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 py-16 md:py-20 text-center">
