@@ -55,17 +55,17 @@ export default async function HomePage() {
       {/* We're Superscore - Green CTA */}
       <section className="bg-white py-6 md:py-8">
         <div className="container mx-auto px-4">
-          <div className="relative rounded-[32px] overflow-hidden">
+          <div className="relative rounded-[32px] overflow-hidden bg-[#0a1a0f]">
             {/* Video Background - Desktop */}
             <video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover hidden md:block">
               <source src="/hero-bg.webm" type="video/webm" />
             </video>
             {/* Video Background - Mobile */}
-            <video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover md:hidden">
+            <video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover md:hidden" style={{ objectPosition: 'center 65%', transform: 'scale(1.3)' }}>
               <source src="/hero-bg-mobile.webm" type="video/webm" />
             </video>
             {/* Overlay for readability */}
-            <div className="absolute inset-0 bg-black/30" />
+            <div className="absolute inset-0 bg-black/20" />
             {/* Content */}
             <div className="relative z-10 p-8 md:p-10">
               <div className="flex flex-col md:flex-row md:items-center gap-8">
