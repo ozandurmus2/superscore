@@ -2,42 +2,37 @@
 
 import { useRef, useState } from 'react';
 import Link from 'next/link';
-import {
-  Building2, Plane, Car, Sofa, Gem, Shirt, Laptop, Dumbbell,
-  ShoppingCart, Truck, Phone, Banknote, UtensilsCrossed, Pizza,
-  GraduationCap, Heart, Sparkles, Home, Wrench, Scale,
-  Newspaper, PiggyBank, TreePine, Store, Zap, Droplets, Bike, Dog
-} from 'lucide-react';
+import Image from 'next/image';
 
 const CATEGORIES = [
-  { icon: ShoppingCart, label: 'E-Ticaret', slug: 'e-ticaret' },
-  { icon: Truck, label: 'Kargo & Lojistik', slug: 'kargo-lojistik' },
-  { icon: Phone, label: 'Telekomünikasyon', slug: 'telekomunikasyon' },
-  { icon: Building2, label: 'Bankacılık', slug: 'bankacilik-finans' },
-  { icon: Pizza, label: 'Yemek & Teslimat', slug: 'yemek-teslimat' },
-  { icon: Banknote, label: 'Sigorta', slug: 'sigorta' },
-  { icon: Laptop, label: 'Elektronik & Teknoloji', slug: 'elektronik-teknoloji' },
-  { icon: Plane, label: 'Seyahat & Tatil', slug: 'seyahat-tatil' },
-  { icon: Car, label: 'Araç & Ulaşım', slug: 'arac-ulasim' },
-  { icon: Sofa, label: 'Ev & Mobilya', slug: 'ev-mobilya' },
-  { icon: Heart, label: 'Sağlık & Tıp', slug: 'saglik-tip' },
-  { icon: GraduationCap, label: 'Eğitim', slug: 'egitim' },
-  { icon: Sparkles, label: 'Güzellik & Bakım', slug: 'guzellik-bakim' },
-  { icon: Shirt, label: 'Giyim & Moda', slug: 'giyim-moda' },
-  { icon: Dumbbell, label: 'Spor & Fitness', slug: 'spor-fitness' },
-  { icon: Home, label: 'Ev Hizmetleri', slug: 'ev-hizmetleri' },
-  { icon: Wrench, label: 'İnşaat & İmalat', slug: 'insaat-imalat' },
-  { icon: Scale, label: 'Hukuk Hizmetleri', slug: 'hukuk-hizmetleri' },
-  { icon: Newspaper, label: 'Medya & Yayıncılık', slug: 'medya-yayincilik' },
-  { icon: PiggyBank, label: 'Yatırım & Servet', slug: 'yatirim-servet' },
-  { icon: UtensilsCrossed, label: 'Restoranlar', slug: 'restoranlar' },
-  { icon: TreePine, label: 'Kamu Hizmetleri', slug: 'kamu-hizmetleri' },
-  { icon: Store, label: 'İş Hizmetleri', slug: 'is-hizmetleri' },
-  { icon: Gem, label: 'Mücevher & Saat', slug: 'mucevher-saat' },
-  { icon: Zap, label: 'Enerji', slug: 'enerji' },
-  { icon: Droplets, label: 'Su Hizmetleri', slug: 'su-hizmetleri' },
-  { icon: Bike, label: 'Hobi & El Sanatları', slug: 'hobi' },
-  { icon: Dog, label: 'Evcil Hayvanlar', slug: 'evcil-hayvanlar' },
+  { icon: '/icons/imgi_16_electronics_technology.svg', label: 'E-Ticaret', slug: 'e-ticaret' },
+  { icon: '/icons/imgi_12_car_dealer.svg', label: 'Kargo & Lojistik', slug: 'kargo-lojistik' },
+  { icon: '/icons/imgi_31_electronic_store.svg', label: 'Telekomünikasyon', slug: 'telekomunikasyon' },
+  { icon: '/icons/imgi_10_banks.svg', label: 'Bankacılık', slug: 'bankacilik-finans' },
+  { icon: '/icons/imgi_29_appliance_store.svg', label: 'Yemek & Teslimat', slug: 'yemek-teslimat' },
+  { icon: '/icons/imgi_21_insurance_agency.svg', label: 'Sigorta', slug: 'sigorta' },
+  { icon: '/icons/imgi_31_electronic_store.svg', label: 'Elektronik & Teknoloji', slug: 'elektronik-teknoloji' },
+  { icon: '/icons/imgi_33_travel_agency.svg', label: 'Seyahat & Tatil', slug: 'seyahat-tatil' },
+  { icon: '/icons/imgi_12_car_dealer.svg', label: 'Araç & Ulaşım', slug: 'arac-ulasim' },
+  { icon: '/icons/imgi_13_furniture_store.svg', label: 'Ev & Mobilya', slug: 'ev-mobilya' },
+  { icon: '/icons/imgi_30_cosmetics_store.svg', label: 'Sağlık & Tıp', slug: 'saglik-tip' },
+  { icon: '/icons/imgi_28_mortgage_broker.svg', label: 'Eğitim', slug: 'egitim' },
+  { icon: '/icons/imgi_30_cosmetics_store.svg', label: 'Güzellik & Bakım', slug: 'guzellik-bakim' },
+  { icon: '/icons/imgi_15_clothing_store.svg', label: 'Giyim & Moda', slug: 'giyim-moda' },
+  { icon: '/icons/imgi_17_fitness_nutrition_center.svg', label: 'Spor & Fitness', slug: 'spor-fitness' },
+  { icon: '/icons/imgi_22_bedroom_furniture.svg', label: 'Ev Hizmetleri', slug: 'ev-hizmetleri' },
+  { icon: '/icons/imgi_20_real_estate_agents.svg', label: 'İnşaat & İmalat', slug: 'insaat-imalat' },
+  { icon: '/icons/imgi_11_travel_insurance.svg', label: 'Hukuk Hizmetleri', slug: 'hukuk-hizmetleri' },
+  { icon: '/icons/imgi_16_electronics_technology.svg', label: 'Medya & Yayıncılık', slug: 'medya-yayincilik' },
+  { icon: '/icons/imgi_10_banks.svg', label: 'Yatırım & Servet', slug: 'yatirim-servet' },
+  { icon: '/icons/imgi_29_appliance_store.svg', label: 'Restoranlar', slug: 'restoranlar' },
+  { icon: '/icons/imgi_32_garden_center.svg', label: 'Kamu Hizmetleri', slug: 'kamu-hizmetleri' },
+  { icon: '/icons/imgi_20_real_estate_agents.svg', label: 'İş Hizmetleri', slug: 'is-hizmetleri' },
+  { icon: '/icons/imgi_14_jewelry_store.svg', label: 'Mücevher & Saat', slug: 'mucevher-saat' },
+  { icon: '/icons/imgi_19_energy_supplier.svg', label: 'Enerji', slug: 'enerji' },
+  { icon: '/icons/imgi_32_garden_center.svg', label: 'Su Hizmetleri', slug: 'su-hizmetleri' },
+  { icon: '/icons/imgi_26_bicycle_shop.svg', label: 'Hobi & El Sanatları', slug: 'hobi' },
+  { icon: '/icons/imgi_18_pet_store.svg', label: 'Evcil Hayvanlar', slug: 'evcil-hayvanlar' },
 ];
 
 export function CategorySlider() {
@@ -118,7 +113,13 @@ export function CategorySlider() {
               href={`/markalar?kategori=${cat.slug}`}
               className="flex flex-col items-center gap-2 min-w-[80px] md:min-w-[100px] group"
             >
-              <cat.icon className="h-6 w-6 md:h-7 md:w-7 text-[#1b1a1b] group-hover:text-[#3c57bc] transition-colors" strokeWidth={1.5} />
+              <Image
+                src={cat.icon}
+                alt={cat.label}
+                width={28}
+                height={28}
+                className="w-6 h-6 md:w-7 md:h-7 group-hover:opacity-70 transition-opacity"
+              />
               <span className="text-xs md:text-sm text-[#1b1a1b] text-center whitespace-nowrap group-hover:text-[#3c57bc] transition-colors">
                 {cat.label}
               </span>
