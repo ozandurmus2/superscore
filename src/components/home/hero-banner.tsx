@@ -15,8 +15,8 @@ export function HeroBanner() {
 
   return (
     <section className="relative overflow-hidden bg-[#0a0a0a] min-h-[480px] md:min-h-[540px] flex items-center justify-center">
-      {/* Video Background */}
-      <div className="absolute inset-0 w-full h-full overflow-hidden">
+      {/* Video Background - absolute fill */}
+      <div className="absolute top-0 left-0 right-0 bottom-0">
         <video
           ref={videoRef}
           autoPlay
@@ -25,17 +25,29 @@ export function HeroBanner() {
           playsInline
           preload="auto"
           onLoadedData={() => setVideoLoaded(true)}
-          className={`w-full h-full object-cover transition-opacity duration-700 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
-          style={{ objectPosition: '70% center' }}
+          className={`transition-opacity duration-700 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            objectPosition: 'center center',
+          }}
         >
           <source
             src="https://cdn.shopify.com/b/shopify-brochure2-assets/c6592ae0c066026c8de941bc859e4b9d.webm"
             type="video/webm"
           />
+          <source
+            src="https://cdn.shopify.com/b/shopify-brochure2-assets/c6592ae0c066026c8de941bc859e4b9d.mp4"
+            type="video/mp4"
+          />
         </video>
       </div>
 
-      {/* Dark overlay for readability */}
+      {/* Dark overlay */}
       <div className="absolute inset-0 bg-black/35" />
 
       {/* Content */}
