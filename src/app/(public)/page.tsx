@@ -55,29 +55,38 @@ export default async function HomePage() {
       {/* We're Superscore - Green CTA */}
       <section className="bg-white py-6 md:py-8">
         <div className="container mx-auto px-4">
-          <div className="bg-[#c1f6cf] rounded-[32px] p-8 md:p-10">
-            <div className="flex flex-col md:flex-row md:items-center gap-8">
-              <div className="flex-1">
-                <h2 className="font-superscore-bold text-2xl md:text-3xl text-[#1b1a1b] mb-4">Biz Superscore&apos;uz</h2>
-                <p className="text-[#1b1a1b]/80 text-base md:text-lg mb-6 max-w-lg">
-                  Herkese açık bir değerlendirme platformuyuz. Vizyonumuz, evrensel güven sembolü olmak — insanların güvenle alışveriş yapmasını sağlamak ve şirketlerin gelişmesine yardımcı olmak.
-                </p>
-                <Link href="/nasil-calisir">
-                  <button className="px-6 py-3 bg-[#121511] text-white text-sm font-semibold rounded-full hover:bg-[#397c4f] transition-colors">
-                    Ne Yapıyoruz
-                  </button>
-                </Link>
-              </div>
-              <div className="bg-[#225430] rounded-2xl p-6 md:p-8 md:max-w-sm relative overflow-hidden">
-                <div className="absolute -top-4 -right-4 w-20 h-20 rounded-full border-4 border-[#52b37f]/40" />
-                <div className="absolute -top-2 -right-2 w-14 h-14 rounded-full border-4 border-white/20" />
-                <h3 className="font-superscore-bold text-lg text-white mb-2">Yeni Güven Raporumuz Yayında!</h3>
-                <p className="text-white/80 text-sm mb-5">Platformumuzda güveni korumak ve teşvik etmek için hangi aksiyonları aldığımızı keşfedin.</p>
-                <Link href="/nasil-calisir">
-                  <button className="px-5 py-2.5 text-sm font-medium text-[#4256b6] border border-[#4256b6] rounded-full bg-transparent hover:bg-[#397c4f] hover:text-white hover:border-[#397c4f] transition-all">
-                    Göz Atın
-                  </button>
-                </Link>
+          <div className="relative rounded-[32px] overflow-hidden">
+            {/* Video Background - Desktop */}
+            <video autoPlay muted loop playsInline className="w-full h-auto hidden md:block">
+              <source src="/bg-desktop.webm" type="video/webm" />
+            </video>
+            {/* Video Background - Mobile */}
+            <video autoPlay muted loop playsInline className="w-full h-auto md:hidden">
+              <source src="/bg-mobile.webm" type="video/webm" />
+            </video>
+            {/* Content overlaid */}
+            <div className="absolute inset-0 z-10 p-8 md:p-10">
+              <div className="flex flex-col md:flex-row md:items-center gap-8 h-full">
+                <div className="flex-1">
+                  <h2 className="font-superscore-bold text-2xl md:text-3xl text-white mb-4">Biz Superscore&apos;uz</h2>
+                  <p className="text-white/80 text-base md:text-lg mb-6 max-w-lg">
+                    Herkese açık bir değerlendirme platformuyuz. Vizyonumuz, evrensel güven sembolü olmak — insanların güvenle alışveriş yapmasını sağlamak ve şirketlerin gelişmesine yardımcı olmak.
+                  </p>
+                  <Link href="/nasil-calisir">
+                    <button className="px-6 py-3 bg-white text-[#1b1a1b] text-sm font-semibold rounded-full hover:bg-white/90 transition-colors">
+                      Ne Yapıyoruz
+                    </button>
+                  </Link>
+                </div>
+                <div className="bg-white/15 backdrop-blur-md rounded-2xl p-6 md:p-8 md:max-w-sm relative overflow-hidden border border-white/20">
+                  <h3 className="font-superscore-bold text-lg text-white mb-2">Yeni Güven Raporumuz Yayında!</h3>
+                  <p className="text-white/80 text-sm mb-5">Platformumuzda güveni korumak ve teşvik etmek için hangi aksiyonları aldığımızı keşfedin.</p>
+                  <Link href="/nasil-calisir">
+                    <button className="px-5 py-2.5 text-sm font-medium text-white border border-white/50 rounded-full bg-transparent hover:bg-white/20 transition-all">
+                      Göz Atın
+                    </button>
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
