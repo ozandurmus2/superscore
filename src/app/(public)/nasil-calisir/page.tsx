@@ -299,6 +299,114 @@ export default function NasilCalisirPage() {
         </div>
       </section>
 
+      {/* ═══ SUPERSCORE ADVANTAGES ═══ */}
+      <section className="relative overflow-hidden" style={{ background: '#171e16' }}>
+        {/* Background image - desktop */}
+        <Image
+          src="/advantages-desktop.png"
+          alt=""
+          width={1920}
+          height={1080}
+          className="absolute inset-0 w-full h-full object-cover hidden md:block opacity-30"
+        />
+        {/* Background image - mobile */}
+        <Image
+          src="/advantages-mobile.png"
+          alt=""
+          width={750}
+          height={1200}
+          className="absolute inset-0 w-full h-full object-cover md:hidden opacity-30"
+        />
+
+        <div className="container mx-auto px-4 relative z-10 py-20 md:py-28">
+          {/* Header */}
+          <div className="mb-14 max-w-2xl">
+            <p className="text-[#cdf986]/50 text-xs tracking-[0.2em] uppercase mb-3 font-semibold">Superscore&apos;un Avantajları</p>
+            <h2 className="text-2xl md:text-[36px] lg:text-[42px] text-white leading-[1.1] mb-5" style={{ fontWeight: 450 }}>
+              Geleceğe hazırlık için tasarlanmış platform
+            </h2>
+            <p className="text-white/40 text-sm md:text-[15px] leading-relaxed max-w-2xl">
+              Superscore, tüketicilerin haklarını koruyan ve markaların güvenilirliğini artıran yeni nesil bir değerlendirme platformudur. AI destekli çözüm doğrulama, dinamik puanlama ve şeffaf süreç yönetimi ile sektörde fark yaratır.
+            </p>
+          </div>
+
+          {/* 6 Advantages grid - 3x2 */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-12 mb-16">
+            {[
+              {
+                icon: '/icons/imgi_12_5853e1cc87bfc05b2782fb4488aebc02.svg',
+                title: 'Şikayetleri hızla çözün',
+                desc: 'AI destekli süreç yönetimi ile şikayetleriniz diğer platformlara kıyasla çok daha hızlı çözüme kavuşur. Marka motivasyonu yüksek tutulur.',
+              },
+              {
+                icon: '/icons/imgi_13_558d6fa2334ecbd39fb4e3ce717a423a.svg',
+                title: 'Güven puanı kazanın',
+                desc: 'Her çözülen şikayet markanın Superscore puanını yükseltir. Tüketiciler güvenilir markaları kolayca ayırt edebilir.',
+              },
+              {
+                icon: '/icons/imgi_14_125873df9d08d5db1a9b52ecb6ed784b.svg',
+                title: 'AI ile çözüm doğrulama',
+                desc: 'Yapay zeka teknolojimiz markaların yüklediği çözüm belgelerini analiz eder. Gerçek çözüm sağlanıp sağlanmadığını otomatik değerlendirir.',
+              },
+              {
+                icon: '/icons/imgi_15_9f9fa6ee411af3a05f8bf5e044ccf048.svg',
+                title: 'Esnek ve şeffaf sistem',
+                desc: 'Tüketici ve marka arasında adil bir köprü. Çözüm süreci şeffaf yönetilir, her iki taraf için hakkaniyetli sonuçlar üretilir.',
+              },
+              {
+                icon: '/icons/imgi_16_0bec14dc1d1e0728760e471cbe8e103b.svg',
+                title: 'Hediye ve kupon fırsatları',
+                desc: 'Markalar çözüm sürecinde tüketicilere hediye, indirim kuponu ve özel teklifler sunabilir. Şikayetler memnuniyete dönüşür.',
+              },
+              {
+                icon: '/icons/imgi_17_29220bc93d3ace9dfbd83f8cf52b8eb6.svg',
+                title: 'Widget ile güven gösterimi',
+                desc: 'Superscore widget kullanan markaların web sitelerinde güven puanını görebilirsiniz. Alışveriş öncesi doğru kararı verin.',
+              },
+            ].map((item, i) => (
+              <div key={i}>
+                <div className="mb-4">
+                  <Image src={item.icon} alt="" width={56} height={56} className="w-14 h-14" />
+                </div>
+                <h3 className="text-white text-base md:text-lg mb-2" style={{ fontWeight: 500 }}>{item.title}</h3>
+                <p className="text-white/40 text-sm leading-relaxed">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Bottom stat cards - green gradient */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {[
+              {
+                big: '%100',
+                sub: 'Çözüm Odaklı Sistem',
+                desc: 'Her şikayet AI ve admin ekibi tarafından doğrulanır, çözüm garantisi altındadır.',
+              },
+              {
+                big: 'Binlerce',
+                sub: 'Tüketici',
+                desc: 'Superscore\'u kullanan tüketiciler şikayetlerinin gerçekten çözüldüğünü deneyimliyor.',
+              },
+              {
+                big: '12',
+                sub: 'Benzersiz Özellik',
+                desc: 'Diğer platformlarda bulunmayan, sadece Superscore\'da olan özellik sayısı.',
+              },
+            ].map((stat, i) => (
+              <div
+                key={i}
+                className="rounded-2xl p-7 md:p-8"
+                style={{ background: 'linear-gradient(135deg, rgba(205,249,134,0.12) 0%, rgba(205,249,134,0.06) 100%)', border: '1px solid rgba(205,249,134,0.08)' }}
+              >
+                <p className="font-superscore-bold text-2xl md:text-3xl text-[#cdf986] mb-1">{stat.big}</p>
+                <p className="text-white text-sm mb-2" style={{ fontWeight: 500 }}>{stat.sub}</p>
+                <p className="text-white/35 text-xs leading-relaxed">{stat.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ═══ HOW IT WORKS STEPS ═══ */}
       <section ref={steps.ref} className="py-20 md:py-28 bg-white">
         <div className="container mx-auto px-4">
