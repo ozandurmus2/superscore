@@ -420,8 +420,8 @@ export default function NasilCalisirPage() {
           <div className="container mx-auto px-4">
             <div className="flex flex-col md:flex-row items-center gap-0 md:gap-6 lg:gap-10">
               {/* Left - Globe (bigger area, no clip) */}
-              <div className="flex-1 relative w-full" style={{ minHeight: '500px', height: '60vh', maxHeight: '750px' }}>
-                <div className="absolute" style={{ inset: '2% 0%', zIndex: 1 }}>
+              <div className="flex-1 relative w-full overflow-hidden" style={{ minHeight: '400px', height: '50vh', maxHeight: '600px' }}>
+                <div className="absolute" style={{ inset: '5% 5%', zIndex: 1 }}>
                   <Globe />
                 </div>
 
