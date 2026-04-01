@@ -4,14 +4,9 @@ import { useEffect, useRef, useCallback } from 'react';
 
 export default function Globe() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const rendererRef = useRef<any>(null);
-  const sceneRef = useRef<any>(null);
-  const cameraRef = useRef<any>(null);
-  const globeRef = useRef<any>(null);
   const frameRef = useRef<number>(0);
   const isDragging = useRef(false);
   const previousMouse = useRef({ x: 0, y: 0 });
-  const rotationSpeed = useRef({ x: 0.002, y: 0.001 });
   const targetRotation = useRef({ x: 0, y: 0 });
 
   const init = useCallback(async () => {
@@ -24,130 +19,102 @@ export default function Globe() {
 
     // Scene
     const scene = new THREE.Scene();
-    sceneRef.current = scene;
 
     // Camera
     const camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 1000);
-    camera.position.z = 2.8;
-    cameraRef.current = camera;
+    camera.position.z = 2.6;
 
     // Renderer
-    const renderer = new THREE.WebGLRenderer({
-      antialias: true,
-      alpha: true,
-    });
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(w, h);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setClearColor(0x000000, 0);
     containerRef.current.appendChild(renderer.domElement);
-    rendererRef.current = renderer;
 
-    // Globe geometry
-    const geometry = new THREE.SphereGeometry(1, 64, 64);
+    const textureLoader = new THREE.TextureLoader();
 
-    // Custom shader material for the globe
+    // ── Earth textures (NASA Blue Marble) ──
+    const earthDayMap = textureLoader.load(
+      'https://unpkg.com/three-globe@2.31.1/example/img/earth-blue-marble.jpg'
+    );
+    const earthNightMap = textureLoader.load(
+      'https://unpkg.com/three-globe@2.31.1/example/img/earth-night.jpg'
+    );
+    const earthBumpMap = textureLoader.load(
+      'https://unpkg.com/three-globe@2.31.1/example/img/earth-topology.png'
+    );
+
+    // ── Globe with day/night shader ──
+    const globeGeometry = new THREE.SphereGeometry(1, 64, 64);
     const globeMaterial = new THREE.ShaderMaterial({
       uniforms: {
+        uDayMap: { value: earthDayMap },
+        uNightMap: { value: earthNightMap },
+        uBumpMap: { value: earthBumpMap },
         uTime: { value: 0 },
-        uColor1: { value: new THREE.Color('#0a2e1a') },
-        uColor2: { value: new THREE.Color('#1a5c3a') },
-        uGlow: { value: new THREE.Color('#36f4a4') },
+        uSunDir: { value: new THREE.Vector3(1.5, 0.5, 1.0).normalize() },
       },
       vertexShader: `
-        varying vec3 vNormal;
-        varying vec3 vPosition;
         varying vec2 vUv;
+        varying vec3 vNormal;
+        varying vec3 vWorldPos;
         void main() {
-          vNormal = normalize(normalMatrix * normal);
-          vPosition = position;
           vUv = uv;
+          vNormal = normalize(normalMatrix * normal);
+          vWorldPos = (modelMatrix * vec4(position, 1.0)).xyz;
           gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
         }
       `,
       fragmentShader: `
+        uniform sampler2D uDayMap;
+        uniform sampler2D uNightMap;
         uniform float uTime;
-        uniform vec3 uColor1;
-        uniform vec3 uColor2;
-        uniform vec3 uGlow;
-        varying vec3 vNormal;
-        varying vec3 vPosition;
+        uniform vec3 uSunDir;
         varying vec2 vUv;
-
-        // Simplex-like noise
-        float hash(vec2 p) {
-          return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
-        }
-
-        float noise(vec2 p) {
-          vec2 i = floor(p);
-          vec2 f = fract(p);
-          f = f * f * (3.0 - 2.0 * f);
-          float a = hash(i);
-          float b = hash(i + vec2(1.0, 0.0));
-          float c = hash(i + vec2(0.0, 1.0));
-          float d = hash(i + vec2(1.0, 1.0));
-          return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
-        }
+        varying vec3 vNormal;
+        varying vec3 vWorldPos;
 
         void main() {
-          // Fresnel edge glow
-          float fresnel = pow(1.0 - abs(dot(vNormal, vec3(0.0, 0.0, 1.0))), 2.5);
+          vec3 dayColor = texture2D(uDayMap, vUv).rgb;
+          vec3 nightColor = texture2D(uNightMap, vUv).rgb;
 
-          // Grid lines (latitude/longitude)
-          float lat = abs(sin(vUv.y * 3.14159 * 12.0));
-          float lon = abs(sin(vUv.x * 3.14159 * 24.0));
-          float grid = smoothstep(0.96, 1.0, lat) + smoothstep(0.96, 1.0, lon);
-          grid *= 0.15;
+          // Sun lighting
+          float sunDot = dot(vNormal, uSunDir);
+          float dayFactor = smoothstep(-0.15, 0.3, sunDot);
 
-          // Continent-like noise pattern
-          float n = noise(vUv * 8.0 + uTime * 0.05);
-          float n2 = noise(vUv * 16.0 - uTime * 0.03);
-          float continents = smoothstep(0.45, 0.55, n * 0.7 + n2 * 0.3);
+          // Mix day/night
+          vec3 color = mix(nightColor * 1.3, dayColor, dayFactor);
 
-          // Base color mix
-          vec3 baseColor = mix(uColor1, uColor2, continents * 0.8);
+          // Slight teal tint to ocean areas (darker regions)
+          float luminance = dot(color, vec3(0.299, 0.587, 0.114));
+          vec3 tealTint = vec3(0.05, 0.18, 0.22);
+          color = mix(color, color + tealTint * 0.3, smoothstep(0.0, 0.15, 1.0 - luminance) * (1.0 - dayFactor));
 
-          // Add grid
-          baseColor += vec3(grid) * uGlow * 0.5;
+          // City lights glow on night side (golden)
+          float nightGlow = (1.0 - dayFactor) * nightColor.r;
+          color += vec3(1.0, 0.75, 0.3) * nightGlow * 0.6;
 
-          // Add animated dots (cities)
-          float dots = 0.0;
-          for (int i = 0; i < 8; i++) {
-            vec2 dotPos = vec2(
-              hash(vec2(float(i) * 1.3, 0.5)),
-              hash(vec2(0.5, float(i) * 1.7))
-            );
-            float d = distance(vUv, dotPos);
-            float pulse = sin(uTime * 2.0 + float(i) * 1.5) * 0.5 + 0.5;
-            dots += smoothstep(0.015, 0.005, d) * pulse;
-          }
-          baseColor += uGlow * dots * 0.8;
+          // Fresnel edge atmosphere
+          float fresnel = pow(1.0 - abs(dot(vNormal, vec3(0.0, 0.0, 1.0))), 3.0);
+          vec3 atmosColor = vec3(0.2, 0.6, 0.9);
+          color += atmosColor * fresnel * 0.35;
 
-          // Edge glow
-          baseColor += uGlow * fresnel * 0.4;
-
-          // Atmosphere
-          float atmosphere = fresnel * 0.6;
-          baseColor += uGlow * atmosphere * 0.3;
-
-          gl_FragColor = vec4(baseColor, 0.95 - fresnel * 0.3);
+          gl_FragColor = vec4(color, 1.0);
         }
       `,
-      transparent: true,
-      side: THREE.FrontSide,
+      transparent: false,
     });
 
-    const globe = new THREE.Mesh(geometry, globeMaterial);
-    globe.rotation.x = 0.3;
+    const globe = new THREE.Mesh(globeGeometry, globeMaterial);
+    globe.rotation.x = 0.25;
+    // Start facing Turkey (lon ~35°)
+    globe.rotation.y = -0.6;
     scene.add(globe);
-    globeRef.current = globe;
 
-    // Atmosphere glow ring
-    const atmosphereGeometry = new THREE.SphereGeometry(1.05, 64, 64);
-    const atmosphereMaterial = new THREE.ShaderMaterial({
-      uniforms: {
-        uGlow: { value: new THREE.Color('#36f4a4') },
-      },
+    // ── Atmosphere outer glow ──
+    const atmoGeo = new THREE.SphereGeometry(1.06, 64, 64);
+    const atmoMat = new THREE.ShaderMaterial({
+      uniforms: {},
       vertexShader: `
         varying vec3 vNormal;
         void main() {
@@ -156,138 +123,230 @@ export default function Globe() {
         }
       `,
       fragmentShader: `
-        uniform vec3 uGlow;
         varying vec3 vNormal;
         void main() {
-          float intensity = pow(0.65 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 3.0);
-          gl_FragColor = vec4(uGlow, intensity * 0.4);
+          float intensity = pow(0.6 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 3.5);
+          vec3 color = mix(vec3(0.15, 0.5, 0.8), vec3(0.2, 0.95, 0.6), 0.3);
+          gl_FragColor = vec4(color, intensity * 0.5);
         }
       `,
       transparent: true,
       side: THREE.BackSide,
     });
-    const atmosphere = new THREE.Mesh(atmosphereGeometry, atmosphereMaterial);
+    const atmosphere = new THREE.Mesh(atmoGeo, atmoMat);
     scene.add(atmosphere);
 
-    // Connection arcs
+    // ── Connection arcs (Turkey-centric, golden/green) ──
     const arcGroup = new THREE.Group();
     scene.add(arcGroup);
 
-    const createArc = (startLat: number, startLon: number, endLat: number, endLon: number) => {
-      const toCartesian = (lat: number, lon: number, r: number) => {
-        const phi = (90 - lat) * Math.PI / 180;
-        const theta = (lon + 180) * Math.PI / 180;
-        return new THREE.Vector3(
-          -r * Math.sin(phi) * Math.cos(theta),
-          r * Math.cos(phi),
-          r * Math.sin(phi) * Math.sin(theta)
-        );
-      };
-
-      const start = toCartesian(startLat, startLon, 1.01);
-      const end = toCartesian(endLat, endLon, 1.01);
-      const mid = start.clone().add(end).multiplyScalar(0.5);
-      const dist = start.distanceTo(end);
-      mid.normalize().multiplyScalar(1.0 + dist * 0.35);
-
-      const curve = new THREE.QuadraticBezierCurve3(start, mid, end);
-      const points = curve.getPoints(50);
-      const lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
-      const lineMaterial = new THREE.LineBasicMaterial({
-        color: new THREE.Color('#36f4a4'),
-        transparent: true,
-        opacity: 0.35,
-      });
-      return new THREE.Line(lineGeometry, lineMaterial);
+    const toCartesian = (lat: number, lon: number, r: number) => {
+      const phi = (90 - lat) * Math.PI / 180;
+      const theta = (lon + 180) * Math.PI / 180;
+      return new THREE.Vector3(
+        -r * Math.sin(phi) * Math.cos(theta),
+        r * Math.cos(phi),
+        r * Math.sin(phi) * Math.sin(theta)
+      );
     };
 
-    // Add some connection arcs (Turkey-centric)
-    const arcs = [
-      [39, 35, 51, 0],      // Turkey → UK
-      [39, 35, 48, 2],      // Turkey → France
-      [39, 35, 52, 13],     // Turkey → Germany
-      [39, 35, 40, -74],    // Turkey → USA
-      [39, 35, 35, 139],    // Turkey → Japan
-      [39, 35, 55, 37],     // Turkey → Russia
-      [39, 35, 25, 55],     // Turkey → UAE
+    const createArc = (sLat: number, sLon: number, eLat: number, eLon: number, color: string) => {
+      const start = toCartesian(sLat, sLon, 1.005);
+      const end = toCartesian(eLat, eLon, 1.005);
+      const mid = start.clone().add(end).multiplyScalar(0.5);
+      const dist = start.distanceTo(end);
+      mid.normalize().multiplyScalar(1.0 + dist * 0.4);
+      const curve = new THREE.QuadraticBezierCurve3(start, mid, end);
+      const points = curve.getPoints(64);
+      const geo = new THREE.BufferGeometry().setFromPoints(points);
+      const mat = new THREE.LineBasicMaterial({
+        color: new THREE.Color(color),
+        transparent: true,
+        opacity: 0.5,
+      });
+      return new THREE.Line(geo, mat);
+    };
+
+    const arcData = [
+      [39, 35, 51.5, -0.1, '#ffffff'],   // Turkey → London
+      [39, 35, 48.8, 2.3, '#36f4a4'],    // Turkey → Paris
+      [39, 35, 52.5, 13.4, '#ffffff'],    // Turkey → Berlin
+      [39, 35, 40.7, -74, '#ffaa44'],     // Turkey → NYC
+      [39, 35, 35.7, 139.7, '#36f4a4'],   // Turkey → Tokyo
+      [39, 35, 25.2, 55.3, '#ffaa44'],    // Turkey → Dubai
+      [39, 35, 55.7, 37.6, '#ffffff'],    // Turkey → Moscow
+      [39, 35, 41.0, 29.0, '#36f4a4'],    // Ankara → Istanbul
     ];
-    arcs.forEach(([sLat, sLon, eLat, eLon]) => {
-      arcGroup.add(createArc(sLat, sLon, eLat, eLon));
+    arcData.forEach(([sLat, sLon, eLat, eLon, color]) => {
+      arcGroup.add(createArc(sLat as number, sLon as number, eLat as number, eLon as number, color as string));
     });
 
-    // Light
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.1);
-    scene.add(ambientLight);
-    const pointLight = new THREE.PointLight(0x36f4a4, 1.5, 10);
-    pointLight.position.set(3, 2, 3);
-    scene.add(pointLight);
+    // ── Star icon sprites that burst/pop around the globe ──
+    const starIconTexture = textureLoader.load('/logo/star_icon.png');
 
-    // Particles (stars)
-    const particlesGeometry = new THREE.BufferGeometry();
-    const particleCount = 300;
-    const positions = new Float32Array(particleCount * 3);
-    for (let i = 0; i < particleCount * 3; i += 3) {
-      positions[i] = (Math.random() - 0.5) * 10;
-      positions[i + 1] = (Math.random() - 0.5) * 10;
-      positions[i + 2] = (Math.random() - 0.5) * 10 - 2;
+    interface StarSprite {
+      mesh: THREE.Sprite;
+      life: number;
+      maxLife: number;
+      velocity: THREE.Vector3;
+      startPos: THREE.Vector3;
+      scale: number;
     }
-    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    const particlesMaterial = new THREE.PointsMaterial({
-      size: 0.008,
-      color: 0x36f4a4,
-      transparent: true,
-      opacity: 0.4,
-    });
-    const particles = new THREE.Points(particlesGeometry, particlesMaterial);
-    scene.add(particles);
 
-    // Animation
+    const starSprites: StarSprite[] = [];
+    const starGroup = new THREE.Group();
+    scene.add(starGroup);
+
+    const spawnStar = () => {
+      const spriteMat = new THREE.SpriteMaterial({
+        map: starIconTexture,
+        transparent: true,
+        opacity: 0,
+        color: new THREE.Color().setHSL(0.12 + Math.random() * 0.15, 0.9, 0.65),
+      });
+      const sprite = new THREE.Sprite(spriteMat);
+
+      // Random position on globe surface
+      const lat = (Math.random() - 0.5) * 140;
+      const lon = (Math.random() - 0.5) * 360;
+      const pos = toCartesian(lat, lon, 1.08);
+      sprite.position.copy(pos);
+
+      const outward = pos.clone().normalize();
+      const velocity = outward.multiplyScalar(0.008 + Math.random() * 0.012);
+      velocity.x += (Math.random() - 0.5) * 0.004;
+      velocity.y += (Math.random() - 0.5) * 0.004;
+
+      const scale = 0.04 + Math.random() * 0.04;
+      sprite.scale.set(0, 0, 0);
+
+      starGroup.add(sprite);
+      starSprites.push({
+        mesh: sprite,
+        life: 0,
+        maxLife: 80 + Math.random() * 60,
+        velocity,
+        startPos: pos.clone(),
+        scale,
+      });
+    };
+
+    // ── Lighting ──
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.15);
+    scene.add(ambientLight);
+    const sunLight = new THREE.DirectionalLight(0xffffff, 1.2);
+    sunLight.position.set(5, 2, 4);
+    scene.add(sunLight);
+    const backLight = new THREE.PointLight(0x36f4a4, 0.4, 8);
+    backLight.position.set(-3, -1, -3);
+    scene.add(backLight);
+
+    // ── Background stars ──
+    const starsGeo = new THREE.BufferGeometry();
+    const starCount = 400;
+    const starPositions = new Float32Array(starCount * 3);
+    for (let i = 0; i < starCount * 3; i += 3) {
+      starPositions[i] = (Math.random() - 0.5) * 12;
+      starPositions[i + 1] = (Math.random() - 0.5) * 12;
+      starPositions[i + 2] = -3 - Math.random() * 8;
+    }
+    starsGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+    const starsMat = new THREE.PointsMaterial({
+      size: 0.012,
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.35,
+    });
+    scene.add(new THREE.Points(starsGeo, starsMat));
+
+    // ── Animation loop ──
     let time = 0;
+    let spawnTimer = 0;
+
     const animate = () => {
       frameRef.current = requestAnimationFrame(animate);
-      time += 0.01;
+      time += 0.008;
+      spawnTimer++;
 
-      // Auto-rotate + drag
+      // Auto-rotate
       if (!isDragging.current) {
-        globe.rotation.y += rotationSpeed.current.x;
+        globe.rotation.y += 0.0015;
       }
       globe.rotation.y += targetRotation.current.x * 0.05;
       globe.rotation.x += targetRotation.current.y * 0.05;
-      targetRotation.current.x *= 0.92;
-      targetRotation.current.y *= 0.92;
+      targetRotation.current.x *= 0.93;
+      targetRotation.current.y *= 0.93;
 
-      arcGroup.rotation.y = globe.rotation.y;
-      arcGroup.rotation.x = globe.rotation.x;
-      atmosphere.rotation.y = globe.rotation.y;
-      atmosphere.rotation.x = globe.rotation.x;
+      // Sync
+      arcGroup.rotation.copy(globe.rotation);
+      atmosphere.rotation.copy(globe.rotation);
+      starGroup.rotation.copy(globe.rotation);
 
-      // Update shader time
+      // Shader time
       (globe.material as any).uniforms.uTime.value = time;
 
       // Pulse arcs
       arcGroup.children.forEach((arc, i) => {
-        const mat = (arc as any).material;
-        mat.opacity = 0.2 + Math.sin(time * 2 + i * 0.8) * 0.15;
+        (arc as any).material.opacity = 0.25 + Math.sin(time * 3 + i * 1.2) * 0.2;
       });
 
-      particles.rotation.y = time * 0.02;
+      // Spawn star icons periodically (burst of 1-3)
+      if (spawnTimer % 45 === 0) {
+        const count = 1 + Math.floor(Math.random() * 3);
+        for (let i = 0; i < count; i++) {
+          spawnStar();
+        }
+      }
+
+      // Update star sprites
+      for (let i = starSprites.length - 1; i >= 0; i--) {
+        const s = starSprites[i];
+        s.life++;
+        const t = s.life / s.maxLife;
+
+        // Fade in → hold → fade out
+        let opacity = 0;
+        if (t < 0.15) opacity = t / 0.15;
+        else if (t < 0.6) opacity = 1;
+        else opacity = 1 - (t - 0.6) / 0.4;
+
+        // Scale pop: quick grow then shrink
+        let scaleT = 0;
+        if (t < 0.1) scaleT = t / 0.1 * 1.3;
+        else if (t < 0.2) scaleT = 1.3 - (t - 0.1) / 0.1 * 0.3;
+        else scaleT = 1.0 - (t - 0.2) * 0.5;
+
+        const sc = s.scale * Math.max(0, scaleT);
+        s.mesh.scale.set(sc, sc, sc);
+        (s.mesh.material as any).opacity = Math.max(0, opacity) * 0.85;
+
+        // Move outward
+        s.mesh.position.add(s.velocity);
+
+        // Remove dead
+        if (s.life >= s.maxLife) {
+          starGroup.remove(s.mesh);
+          (s.mesh.material as any).dispose();
+          starSprites.splice(i, 1);
+        }
+      }
 
       renderer.render(scene, camera);
     };
     animate();
 
-    // Resize
+    // ── Resize ──
     const handleResize = () => {
       if (!containerRef.current) return;
-      const w = containerRef.current.offsetWidth;
-      const h = containerRef.current.offsetHeight;
-      camera.aspect = w / h;
+      const nw = containerRef.current.offsetWidth;
+      const nh = containerRef.current.offsetHeight;
+      camera.aspect = nw / nh;
       camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
+      renderer.setSize(nw, nh);
     };
     window.addEventListener('resize', handleResize);
 
-    // Mouse/touch interaction
+    // ── Pointer interaction ──
     const canvas = renderer.domElement;
     canvas.style.touchAction = 'none';
     canvas.style.cursor = 'grab';
@@ -297,7 +356,6 @@ export default function Globe() {
       previousMouse.current = { x: e.clientX, y: e.clientY };
       canvas.style.cursor = 'grabbing';
     };
-
     const onPointerMove = (e: PointerEvent) => {
       if (!isDragging.current) return;
       const dx = e.clientX - previousMouse.current.x;
@@ -306,7 +364,6 @@ export default function Globe() {
       targetRotation.current.y = dy * 0.003;
       previousMouse.current = { x: e.clientX, y: e.clientY };
     };
-
     const onPointerUp = () => {
       isDragging.current = false;
       canvas.style.cursor = 'grab';
