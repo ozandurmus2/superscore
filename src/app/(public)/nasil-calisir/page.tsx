@@ -411,70 +411,85 @@ export default function NasilCalisirPage() {
       </section>
 
       {/* ═══ 3D GLOBE - Rock Steady ═══ */}
-      <section className="relative overflow-hidden" style={{ background: '#0b1f14' }}>
-        {/* Radial bg glow */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_40%,rgba(54,244,164,0.06),transparent_70%)]" />
+      <section className="relative overflow-visible" style={{ background: '#0b1f14' }}>
+        {/* Background image */}
+        <Image
+          src="/globe-bg.png"
+          alt=""
+          width={1920}
+          height={1080}
+          className="absolute inset-0 w-full h-full object-cover opacity-40 hidden md:block"
+        />
+        <Image
+          src="/globe-bg.png"
+          alt=""
+          width={750}
+          height={1200}
+          className="absolute inset-0 w-full h-full object-cover object-center opacity-30 md:hidden"
+        />
 
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="flex flex-col md:flex-row items-center gap-0 md:gap-10">
-            {/* Left - Globe */}
-            <div className="flex-1 relative w-full" style={{ minHeight: '500px' }}>
-              <div className="absolute inset-0 md:inset-[-10%]">
-                <Globe />
-              </div>
+        <div className="relative z-10">
+          <div className="container mx-auto px-4">
+            <div className="flex flex-col md:flex-row items-center gap-0 md:gap-6 lg:gap-10">
+              {/* Left - Globe (bigger area, no clip) */}
+              <div className="flex-1 relative w-full overflow-visible" style={{ minHeight: '600px', height: '70vh', maxHeight: '900px' }}>
+                <div className="absolute overflow-visible" style={{ inset: '-8% -15%', zIndex: 1 }}>
+                  <Globe />
+                </div>
 
-              {/* Floating fact cards */}
-              <div className="absolute bottom-[15%] left-[5%] z-20 hidden md:block animate-float-slow">
-                <div className="grid grid-cols-[20px_1fr] gap-3 px-3 py-3.5 rounded-lg border border-[#11352d] bg-[rgba(16,16,16,0.75)] backdrop-blur-sm max-w-[240px]">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="#36f4a4" strokeWidth="1.2" /><path d="M10 6v4l2.5 2.5" stroke="#36f4a4" strokeWidth="1.2" strokeLinecap="round" /></svg>
-                  <div>
-                    <p className="uppercase text-[10px] text-white tracking-wider leading-relaxed">7/24 Aktif</p>
-                    <p className="uppercase text-[10px] text-[#36f4a4] tracking-wider leading-relaxed">Şikayetleriniz her an takip edilir</p>
+                {/* Floating fact cards */}
+                <div className="absolute bottom-[12%] left-[3%] z-20 hidden md:block animate-float-slow">
+                  <div className="grid grid-cols-[20px_1fr] gap-3 px-3 py-3.5 rounded-lg border border-[#11352d] bg-[rgba(16,16,16,0.75)] backdrop-blur-sm max-w-[240px]">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="#64bf9f" strokeWidth="1.2" /><path d="M10 6v4l2.5 2.5" stroke="#64bf9f" strokeWidth="1.2" strokeLinecap="round" /></svg>
+                    <div>
+                      <p className="uppercase text-[10px] text-white tracking-wider leading-relaxed">7/24 Aktif</p>
+                      <p className="uppercase text-[10px] text-[#64bf9f] tracking-wider leading-relaxed">Şikayetleriniz her an takip edilir</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="absolute top-[18%] right-[3%] z-20 hidden md:block animate-float-slow" style={{ animationDelay: '1.5s' }}>
+                  <div className="grid grid-cols-[20px_1fr] gap-3 px-3 py-3.5 rounded-lg border border-[#11352d] bg-[rgba(16,16,16,0.75)] backdrop-blur-sm max-w-[240px]">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2l2.5 5 5.5.8-4 3.9.9 5.3-4.9-2.6L5.1 18l.9-5.3-4-3.9 5.5-.8z" stroke="#64bf9f" strokeWidth="1.2" /></svg>
+                    <div>
+                      <p className="uppercase text-[10px] text-white tracking-wider leading-relaxed">Dinamik Puan</p>
+                      <p className="uppercase text-[10px] text-[#64bf9f] tracking-wider leading-relaxed">Gerçek zamanlı Superscore hesaplama</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="absolute bottom-[32%] right-[-2%] z-20 hidden lg:block animate-float-slow" style={{ animationDelay: '3s' }}>
+                  <div className="grid grid-cols-[20px_1fr] gap-3 px-3 py-3.5 rounded-lg border border-[#11352d] bg-[rgba(16,16,16,0.75)] backdrop-blur-sm max-w-[240px]">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="14" height="14" rx="2" stroke="#64bf9f" strokeWidth="1.2" /><path d="M7 10l2 2 4-4" stroke="#64bf9f" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                    <div>
+                      <p className="uppercase text-[10px] text-white tracking-wider leading-relaxed">AI Doğrulama</p>
+                      <p className="uppercase text-[10px] text-[#64bf9f] tracking-wider leading-relaxed">Her çözüm yapay zeka ile kontrol edilir</p>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              <div className="absolute top-[20%] right-[5%] z-20 hidden md:block animate-float-slow" style={{ animationDelay: '1.5s' }}>
-                <div className="grid grid-cols-[20px_1fr] gap-3 px-3 py-3.5 rounded-lg border border-[#11352d] bg-[rgba(16,16,16,0.75)] backdrop-blur-sm max-w-[240px]">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2l2.5 5 5.5.8-4 3.9.9 5.3-4.9-2.6L5.1 18l.9-5.3-4-3.9 5.5-.8z" stroke="#36f4a4" strokeWidth="1.2" /></svg>
-                  <div>
-                    <p className="uppercase text-[10px] text-white tracking-wider leading-relaxed">Dinamik Puan</p>
-                    <p className="uppercase text-[10px] text-[#36f4a4] tracking-wider leading-relaxed">Gerçek zamanlı Superscore hesaplama</p>
-                  </div>
+              {/* Right - Text */}
+              <div className="flex-1 py-16 md:py-28 relative z-20">
+                <h3 className="text-2xl md:text-[36px] text-white leading-[1.15] mb-5" style={{ fontWeight: 450 }}>
+                  Kaya gibi sağlam ve çok hızlı
+                </h3>
+                <p className="text-white/40 text-sm md:text-[15px] leading-relaxed max-w-md mb-8">
+                  Superscore, yüksek trafikli dönemlerde bile kesintisiz çalışır. Şikayetleriniz anında ilgili markaya ulaşır, AI doğrulama süreci milisaniyeler içinde tamamlanır. Türkiye genelinde her tüketiciye hızlı ve güvenilir hizmet.
+                </p>
+
+                <div className="space-y-4">
+                  {[
+                    { val: '%99.9', label: 'Çalışma süresi garantisi' },
+                    { val: '< 1sn', label: 'Şikayet iletim hızı' },
+                    { val: '81 İl', label: 'Türkiye genelinde hizmet' },
+                  ].map((item, i) => (
+                    <div key={i} className="flex items-baseline gap-4">
+                      <span className="font-superscore-bold text-xl md:text-2xl text-[#64bf9f]">{item.val}</span>
+                      <span className="text-white/40 text-sm">{item.label}</span>
+                    </div>
+                  ))}
                 </div>
-              </div>
-
-              <div className="absolute bottom-[35%] right-[0%] z-20 hidden lg:block animate-float-slow" style={{ animationDelay: '3s' }}>
-                <div className="grid grid-cols-[20px_1fr] gap-3 px-3 py-3.5 rounded-lg border border-[#11352d] bg-[rgba(16,16,16,0.75)] backdrop-blur-sm max-w-[240px]">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="14" height="14" rx="2" stroke="#36f4a4" strokeWidth="1.2" /><path d="M7 10l2 2 4-4" stroke="#36f4a4" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                  <div>
-                    <p className="uppercase text-[10px] text-white tracking-wider leading-relaxed">AI Doğrulama</p>
-                    <p className="uppercase text-[10px] text-[#36f4a4] tracking-wider leading-relaxed">Her çözüm yapay zeka ile kontrol edilir</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Right - Text */}
-            <div className="flex-1 py-16 md:py-28 relative z-20">
-              <h3 className="text-2xl md:text-[36px] text-white leading-[1.15] mb-5" style={{ fontWeight: 450 }}>
-                Kaya gibi sağlam ve çok hızlı
-              </h3>
-              <p className="text-white/40 text-sm md:text-[15px] leading-relaxed max-w-md mb-8">
-                Superscore, yüksek trafikli dönemlerde bile kesintisiz çalışır. Şikayetleriniz anında ilgili markaya ulaşır, AI doğrulama süreci milisaniyeler içinde tamamlanır. Türkiye genelinde her tüketiciye hızlı ve güvenilir hizmet.
-              </p>
-
-              <div className="space-y-4">
-                {[
-                  { val: '%99.9', label: 'Çalışma süresi garantisi' },
-                  { val: '< 1sn', label: 'Şikayet iletim hızı' },
-                  { val: '81 İl', label: 'Türkiye genelinde hizmet' },
-                ].map((item, i) => (
-                  <div key={i} className="flex items-baseline gap-4">
-                    <span className="font-superscore-bold text-xl md:text-2xl text-[#36f4a4]">{item.val}</span>
-                    <span className="text-white/40 text-sm">{item.label}</span>
-                  </div>
-                ))}
               </div>
             </div>
           </div>

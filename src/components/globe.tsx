@@ -17,14 +17,11 @@ export default function Globe() {
     const w = containerRef.current.offsetWidth;
     const h = containerRef.current.offsetHeight;
 
-    // Scene
     const scene = new THREE.Scene();
 
-    // Camera
     const camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 1000);
-    camera.position.z = 2.6;
+    camera.position.z = 2.4;
 
-    // Renderer
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(w, h);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -33,35 +30,28 @@ export default function Globe() {
 
     const textureLoader = new THREE.TextureLoader();
 
-    // ── Earth textures (NASA Blue Marble) ──
     const earthDayMap = textureLoader.load(
       'https://unpkg.com/three-globe@2.31.1/example/img/earth-blue-marble.jpg'
     );
     const earthNightMap = textureLoader.load(
       'https://unpkg.com/three-globe@2.31.1/example/img/earth-night.jpg'
     );
-    const earthBumpMap = textureLoader.load(
-      'https://unpkg.com/three-globe@2.31.1/example/img/earth-topology.png'
-    );
 
-    // ── Globe with day/night shader ──
+    // Globe with teal-green tint (#64bf9f)
     const globeGeometry = new THREE.SphereGeometry(1, 64, 64);
     const globeMaterial = new THREE.ShaderMaterial({
       uniforms: {
         uDayMap: { value: earthDayMap },
         uNightMap: { value: earthNightMap },
-        uBumpMap: { value: earthBumpMap },
         uTime: { value: 0 },
         uSunDir: { value: new THREE.Vector3(1.5, 0.5, 1.0).normalize() },
       },
       vertexShader: `
         varying vec2 vUv;
         varying vec3 vNormal;
-        varying vec3 vWorldPos;
         void main() {
           vUv = uv;
           vNormal = normalize(normalMatrix * normal);
-          vWorldPos = (modelMatrix * vec4(position, 1.0)).xyz;
           gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
         }
       `,
@@ -72,32 +62,37 @@ export default function Globe() {
         uniform vec3 uSunDir;
         varying vec2 vUv;
         varying vec3 vNormal;
-        varying vec3 vWorldPos;
 
         void main() {
-          vec3 dayColor = texture2D(uDayMap, vUv).rgb;
-          vec3 nightColor = texture2D(uNightMap, vUv).rgb;
+          vec3 dayTex = texture2D(uDayMap, vUv).rgb;
+          vec3 nightTex = texture2D(uNightMap, vUv).rgb;
 
-          // Sun lighting
           float sunDot = dot(vNormal, uSunDir);
           float dayFactor = smoothstep(-0.15, 0.3, sunDot);
 
-          // Mix day/night
-          vec3 color = mix(nightColor * 1.3, dayColor, dayFactor);
+          // Teal-green tint for land (#64bf9f)
+          float luminance = dot(dayTex, vec3(0.299, 0.587, 0.114));
+          vec3 tealGreen = vec3(0.39, 0.75, 0.62); // #64bf9f
+          vec3 darkOcean = vec3(0.04, 0.1, 0.14);
 
-          // Slight teal tint to ocean areas (darker regions)
-          float luminance = dot(color, vec3(0.299, 0.587, 0.114));
-          vec3 tealTint = vec3(0.05, 0.18, 0.22);
-          color = mix(color, color + tealTint * 0.3, smoothstep(0.0, 0.15, 1.0 - luminance) * (1.0 - dayFactor));
+          // Separate land (brighter) from ocean (darker)
+          float isLand = smoothstep(0.12, 0.25, luminance);
 
-          // City lights glow on night side (golden)
-          float nightGlow = (1.0 - dayFactor) * nightColor.r;
-          color += vec3(1.0, 0.75, 0.3) * nightGlow * 0.6;
+          // Day side: teal-green land, dark ocean
+          vec3 dayColor = mix(darkOcean, tealGreen * (0.6 + luminance * 0.6), isLand);
 
-          // Fresnel edge atmosphere
+          // Night side: dark with golden city lights
+          vec3 nightColor = vec3(0.01, 0.03, 0.05);
+          float cityLights = nightTex.r;
+          nightColor += vec3(1.0, 0.75, 0.3) * cityLights * 1.2;
+          // Subtle teal glow on land at night
+          nightColor += tealGreen * isLand * 0.05;
+
+          vec3 color = mix(nightColor, dayColor, dayFactor);
+
+          // Fresnel atmosphere edge
           float fresnel = pow(1.0 - abs(dot(vNormal, vec3(0.0, 0.0, 1.0))), 3.0);
-          vec3 atmosColor = vec3(0.2, 0.6, 0.9);
-          color += atmosColor * fresnel * 0.35;
+          color += vec3(0.15, 0.55, 0.45) * fresnel * 0.4;
 
           gl_FragColor = vec4(color, 1.0);
         }
@@ -107,14 +102,12 @@ export default function Globe() {
 
     const globe = new THREE.Mesh(globeGeometry, globeMaterial);
     globe.rotation.x = 0.25;
-    // Start facing Turkey (lon ~35°)
-    globe.rotation.y = -0.6;
+    globe.rotation.y = -0.6; // Face Turkey
     scene.add(globe);
 
-    // ── Atmosphere outer glow ──
-    const atmoGeo = new THREE.SphereGeometry(1.06, 64, 64);
+    // Atmosphere
+    const atmoGeo = new THREE.SphereGeometry(1.04, 64, 64);
     const atmoMat = new THREE.ShaderMaterial({
-      uniforms: {},
       vertexShader: `
         varying vec3 vNormal;
         void main() {
@@ -126,17 +119,16 @@ export default function Globe() {
         varying vec3 vNormal;
         void main() {
           float intensity = pow(0.6 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 3.5);
-          vec3 color = mix(vec3(0.15, 0.5, 0.8), vec3(0.2, 0.95, 0.6), 0.3);
-          gl_FragColor = vec4(color, intensity * 0.5);
+          vec3 color = vec3(0.39, 0.75, 0.62); // #64bf9f
+          gl_FragColor = vec4(color, intensity * 0.45);
         }
       `,
       transparent: true,
       side: THREE.BackSide,
     });
-    const atmosphere = new THREE.Mesh(atmoGeo, atmoMat);
-    scene.add(atmosphere);
+    scene.add(new THREE.Mesh(atmoGeo, atmoMat));
 
-    // ── Connection arcs (Turkey-centric, golden/green) ──
+    // Connection arcs
     const arcGroup = new THREE.Group();
     scene.add(arcGroup);
 
@@ -167,21 +159,20 @@ export default function Globe() {
       return new THREE.Line(geo, mat);
     };
 
-    const arcData = [
-      [39, 35, 51.5, -0.1, '#ffffff'],   // Turkey → London
-      [39, 35, 48.8, 2.3, '#36f4a4'],    // Turkey → Paris
-      [39, 35, 52.5, 13.4, '#ffffff'],    // Turkey → Berlin
-      [39, 35, 40.7, -74, '#ffaa44'],     // Turkey → NYC
-      [39, 35, 35.7, 139.7, '#36f4a4'],   // Turkey → Tokyo
-      [39, 35, 25.2, 55.3, '#ffaa44'],    // Turkey → Dubai
-      [39, 35, 55.7, 37.6, '#ffffff'],    // Turkey → Moscow
-      [39, 35, 41.0, 29.0, '#36f4a4'],    // Ankara → Istanbul
-    ];
-    arcData.forEach(([sLat, sLon, eLat, eLon, color]) => {
+    [
+      [39, 35, 51.5, -0.1, '#ffffff'],
+      [39, 35, 48.8, 2.3, '#64bf9f'],
+      [39, 35, 52.5, 13.4, '#ffffff'],
+      [39, 35, 40.7, -74, '#ffaa44'],
+      [39, 35, 35.7, 139.7, '#64bf9f'],
+      [39, 35, 25.2, 55.3, '#ffaa44'],
+      [39, 35, 55.7, 37.6, '#ffffff'],
+      [39, 35, 41.0, 29.0, '#64bf9f'],
+    ].forEach(([sLat, sLon, eLat, eLon, color]) => {
       arcGroup.add(createArc(sLat as number, sLon as number, eLat as number, eLon as number, color as string));
     });
 
-    // ── Star icon sprites that burst/pop around the globe ──
+    // Star icon sprites
     const starIconTexture = textureLoader.load('/logo/star_icon.png');
 
     interface StarSprite {
@@ -189,7 +180,6 @@ export default function Globe() {
       life: number;
       maxLife: number;
       velocity: THREE.Vector3;
-      startPos: THREE.Vector3;
       scale: number;
     }
 
@@ -205,61 +195,46 @@ export default function Globe() {
         color: new THREE.Color().setHSL(0.12 + Math.random() * 0.15, 0.9, 0.65),
       });
       const sprite = new THREE.Sprite(spriteMat);
-
-      // Random position on globe surface
       const lat = (Math.random() - 0.5) * 140;
       const lon = (Math.random() - 0.5) * 360;
-      const pos = toCartesian(lat, lon, 1.08);
+      const pos = toCartesian(lat, lon, 1.06);
       sprite.position.copy(pos);
-
       const outward = pos.clone().normalize();
-      const velocity = outward.multiplyScalar(0.008 + Math.random() * 0.012);
-      velocity.x += (Math.random() - 0.5) * 0.004;
-      velocity.y += (Math.random() - 0.5) * 0.004;
-
-      const scale = 0.04 + Math.random() * 0.04;
+      const velocity = outward.multiplyScalar(0.006 + Math.random() * 0.01);
+      velocity.x += (Math.random() - 0.5) * 0.003;
+      velocity.y += (Math.random() - 0.5) * 0.003;
+      const scale = 0.035 + Math.random() * 0.035;
       sprite.scale.set(0, 0, 0);
-
       starGroup.add(sprite);
-      starSprites.push({
-        mesh: sprite,
-        life: 0,
-        maxLife: 80 + Math.random() * 60,
-        velocity,
-        startPos: pos.clone(),
-        scale,
-      });
+      starSprites.push({ mesh: sprite, life: 0, maxLife: 90 + Math.random() * 60, velocity, scale });
     };
 
-    // ── Lighting ──
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.15);
-    scene.add(ambientLight);
-    const sunLight = new THREE.DirectionalLight(0xffffff, 1.2);
+    // Lighting
+    scene.add(new THREE.AmbientLight(0xffffff, 0.12));
+    const sunLight = new THREE.DirectionalLight(0xffffff, 1.0);
     sunLight.position.set(5, 2, 4);
     scene.add(sunLight);
-    const backLight = new THREE.PointLight(0x36f4a4, 0.4, 8);
+    const backLight = new THREE.PointLight(0x64bf9f, 0.3, 8);
     backLight.position.set(-3, -1, -3);
     scene.add(backLight);
 
-    // ── Background stars ──
+    // Background stars
     const starsGeo = new THREE.BufferGeometry();
-    const starCount = 400;
-    const starPositions = new Float32Array(starCount * 3);
-    for (let i = 0; i < starCount * 3; i += 3) {
-      starPositions[i] = (Math.random() - 0.5) * 12;
-      starPositions[i + 1] = (Math.random() - 0.5) * 12;
-      starPositions[i + 2] = -3 - Math.random() * 8;
+    const starPositions = new Float32Array(500 * 3);
+    for (let i = 0; i < 500 * 3; i += 3) {
+      starPositions[i] = (Math.random() - 0.5) * 14;
+      starPositions[i + 1] = (Math.random() - 0.5) * 14;
+      starPositions[i + 2] = -2 - Math.random() * 10;
     }
     starsGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
-    const starsMat = new THREE.PointsMaterial({
-      size: 0.012,
+    scene.add(new THREE.Points(starsGeo, new THREE.PointsMaterial({
+      size: 0.01,
       color: 0xffffff,
       transparent: true,
-      opacity: 0.35,
-    });
-    scene.add(new THREE.Points(starsGeo, starsMat));
+      opacity: 0.3,
+    })));
 
-    // ── Animation loop ──
+    // Animation
     let time = 0;
     let spawnTimer = 0;
 
@@ -268,21 +243,19 @@ export default function Globe() {
       time += 0.008;
       spawnTimer++;
 
-      // Auto-rotate
       if (!isDragging.current) {
-        globe.rotation.y += 0.0015;
+        globe.rotation.y += 0.001; // Slow auto-rotate
       }
-      globe.rotation.y += targetRotation.current.x * 0.05;
-      globe.rotation.x += targetRotation.current.y * 0.05;
-      targetRotation.current.x *= 0.93;
-      targetRotation.current.y *= 0.93;
 
-      // Sync
+      // Apply drag with 1:1 feel + momentum
+      globe.rotation.y += targetRotation.current.x;
+      globe.rotation.x += targetRotation.current.y;
+      targetRotation.current.x *= 0.95;
+      targetRotation.current.y *= 0.95;
+
       arcGroup.rotation.copy(globe.rotation);
-      atmosphere.rotation.copy(globe.rotation);
       starGroup.rotation.copy(globe.rotation);
 
-      // Shader time
       (globe.material as any).uniforms.uTime.value = time;
 
       // Pulse arcs
@@ -290,12 +263,10 @@ export default function Globe() {
         (arc as any).material.opacity = 0.25 + Math.sin(time * 3 + i * 1.2) * 0.2;
       });
 
-      // Spawn star icons periodically (burst of 1-3)
-      if (spawnTimer % 45 === 0) {
+      // Spawn stars
+      if (spawnTimer % 50 === 0) {
         const count = 1 + Math.floor(Math.random() * 3);
-        for (let i = 0; i < count; i++) {
-          spawnStar();
-        }
+        for (let i = 0; i < count; i++) spawnStar();
       }
 
       // Update star sprites
@@ -303,27 +274,12 @@ export default function Globe() {
         const s = starSprites[i];
         s.life++;
         const t = s.life / s.maxLife;
-
-        // Fade in → hold → fade out
-        let opacity = 0;
-        if (t < 0.15) opacity = t / 0.15;
-        else if (t < 0.6) opacity = 1;
-        else opacity = 1 - (t - 0.6) / 0.4;
-
-        // Scale pop: quick grow then shrink
-        let scaleT = 0;
-        if (t < 0.1) scaleT = t / 0.1 * 1.3;
-        else if (t < 0.2) scaleT = 1.3 - (t - 0.1) / 0.1 * 0.3;
-        else scaleT = 1.0 - (t - 0.2) * 0.5;
-
+        let opacity = t < 0.15 ? t / 0.15 : t < 0.6 ? 1 : 1 - (t - 0.6) / 0.4;
+        let scaleT = t < 0.1 ? t / 0.1 * 1.3 : t < 0.2 ? 1.3 - (t - 0.1) / 0.1 * 0.3 : 1.0 - (t - 0.2) * 0.5;
         const sc = s.scale * Math.max(0, scaleT);
         s.mesh.scale.set(sc, sc, sc);
         (s.mesh.material as any).opacity = Math.max(0, opacity) * 0.85;
-
-        // Move outward
         s.mesh.position.add(s.velocity);
-
-        // Remove dead
         if (s.life >= s.maxLife) {
           starGroup.remove(s.mesh);
           (s.mesh.material as any).dispose();
@@ -335,7 +291,7 @@ export default function Globe() {
     };
     animate();
 
-    // ── Resize ──
+    // Resize
     const handleResize = () => {
       if (!containerRef.current) return;
       const nw = containerRef.current.offsetWidth;
@@ -346,7 +302,7 @@ export default function Globe() {
     };
     window.addEventListener('resize', handleResize);
 
-    // ── Pointer interaction ──
+    // Pointer - 1:1 drag speed with momentum
     const canvas = renderer.domElement;
     canvas.style.touchAction = 'none';
     canvas.style.cursor = 'grab';
@@ -355,13 +311,16 @@ export default function Globe() {
       isDragging.current = true;
       previousMouse.current = { x: e.clientX, y: e.clientY };
       canvas.style.cursor = 'grabbing';
+      targetRotation.current = { x: 0, y: 0 };
     };
     const onPointerMove = (e: PointerEvent) => {
       if (!isDragging.current) return;
       const dx = e.clientX - previousMouse.current.x;
       const dy = e.clientY - previousMouse.current.y;
-      targetRotation.current.x = dx * 0.003;
-      targetRotation.current.y = dy * 0.003;
+      // Direct 1:1 rotation speed
+      const speed = 0.008;
+      targetRotation.current.x = dx * speed;
+      targetRotation.current.y = dy * speed;
       previousMouse.current = { x: e.clientX, y: e.clientY };
     };
     const onPointerUp = () => {
