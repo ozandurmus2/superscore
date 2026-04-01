@@ -412,13 +412,13 @@ export default function NasilCalisirPage() {
 
       {/* ═══ 3D GLOBE - Rock Steady ═══ */}
       <section className="relative overflow-hidden" style={{ background: '#0b1f14' }}>
-        {/* wordbg background */}
+        {/* wordbg background - hidden on mobile to avoid looking like 2nd globe */}
         <Image
           src="/globe-bg.png"
           alt=""
           width={2966}
           height={1300}
-          className="absolute inset-0 w-full h-full object-cover opacity-20 pointer-events-none"
+          className="absolute inset-0 w-full h-full object-cover opacity-0 md:opacity-10 pointer-events-none"
           style={{ zIndex: 0 }}
         />
 
@@ -426,7 +426,7 @@ export default function NasilCalisirPage() {
           <div className="container mx-auto px-4">
             <div className="flex flex-col md:flex-row items-center gap-6 lg:gap-10">
               {/* Left - Globe in square aspect container */}
-              <div className="flex-1 relative w-full max-w-[520px] mx-auto md:mx-0">
+              <div className="flex-1 relative w-full max-w-[320px] md:max-w-[460px] mx-auto md:mx-0">
                 {/* Square aspect ratio box so globe fits perfectly */}
                 <div className="relative w-full" style={{ paddingBottom: '100%' }}>
                   <div className="absolute inset-0">

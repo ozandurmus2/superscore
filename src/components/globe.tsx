@@ -9,10 +9,18 @@ export default function Globe() {
   const previousMouse = useRef({ x: 0, y: 0 });
   const targetRotation = useRef({ x: 0, y: 0 });
 
-  const init = useCallback(async () => {
+  const init = useCallback(async (signal: { cancelled: boolean }) => {
     if (!containerRef.current) return;
 
+    // Remove any existing canvases from previous mounts
+    while (containerRef.current.firstChild) {
+      containerRef.current.removeChild(containerRef.current.firstChild);
+    }
+
     const THREE = await import('three');
+
+    // Check if cancelled during async import
+    if (signal.cancelled || !containerRef.current) return;
 
     const w = containerRef.current.offsetWidth;
     const h = containerRef.current.offsetHeight;
@@ -347,9 +355,25 @@ export default function Globe() {
   }, []);
 
   useEffect(() => {
+    const signal = { cancelled: false };
     let cleanup: (() => void) | undefined;
-    init().then((c) => { cleanup = c; });
-    return () => { cleanup?.(); };
+    init(signal).then((c) => {
+      if (signal.cancelled) {
+        c?.();
+      } else {
+        cleanup = c;
+      }
+    });
+    return () => {
+      signal.cancelled = true;
+      cleanup?.();
+      // Force remove any leftover canvases
+      if (containerRef.current) {
+        while (containerRef.current.firstChild) {
+          containerRef.current.removeChild(containerRef.current.firstChild);
+        }
+      }
+    };
   }, [init]);
 
   return <div ref={containerRef} className="w-full h-full" />;
