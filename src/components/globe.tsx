@@ -317,8 +317,7 @@ export default function Globe() {
       if (!isDragging.current) return;
       const dx = e.clientX - previousMouse.current.x;
       const dy = e.clientY - previousMouse.current.y;
-      // Direct 1:1 rotation speed
-      const speed = 0.008;
+      const speed = 0.006;
       targetRotation.current.x = dx * speed;
       targetRotation.current.y = dy * speed;
       previousMouse.current = { x: e.clientX, y: e.clientY };

@@ -411,29 +411,17 @@ export default function NasilCalisirPage() {
       </section>
 
       {/* ═══ 3D GLOBE - Rock Steady ═══ */}
-      <section className="relative overflow-visible" style={{ background: '#0b1f14' }}>
-        {/* Background image */}
-        <Image
-          src="/globe-bg.png"
-          alt=""
-          width={1920}
-          height={1080}
-          className="absolute inset-0 w-full h-full object-cover opacity-40 hidden md:block"
-        />
-        <Image
-          src="/globe-bg.png"
-          alt=""
-          width={750}
-          height={1200}
-          className="absolute inset-0 w-full h-full object-cover object-center opacity-30 md:hidden"
-        />
+      <section className="relative overflow-hidden" style={{ background: '#0b1f14' }}>
+        {/* Background subtle texture */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_50%,rgba(100,191,159,0.06),transparent_60%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_70%_30%,rgba(100,191,159,0.04),transparent_50%)]" />
 
         <div className="relative z-10">
           <div className="container mx-auto px-4">
             <div className="flex flex-col md:flex-row items-center gap-0 md:gap-6 lg:gap-10">
               {/* Left - Globe (bigger area, no clip) */}
-              <div className="flex-1 relative w-full overflow-visible" style={{ minHeight: '600px', height: '70vh', maxHeight: '900px' }}>
-                <div className="absolute overflow-visible" style={{ inset: '-8% -15%', zIndex: 1 }}>
+              <div className="flex-1 relative w-full" style={{ minHeight: '500px', height: '60vh', maxHeight: '750px' }}>
+                <div className="absolute" style={{ inset: '2% 0%', zIndex: 1 }}>
                   <Globe />
                 </div>
 
