@@ -10,6 +10,7 @@ import { MARKETPLACES, RESOLUTION_OPTIONS } from '@/types';
 import { Search, ArrowRight, ArrowLeft, ShoppingBag, Loader2, X, Info, CheckCircle2, MapPin, Clock } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { BrandLogo } from '@/components/brand/brand-logo';
 import type { Brand } from '@/types';
 
 type Step = 'brand' | 'marketplace' | 'rate' | 'details' | 'submitting' | 'success';
@@ -516,13 +517,7 @@ function NewComplaintWizard() {
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {suggestedBrands.map((b) => (
                       <button key={b.id} onClick={() => handleSelectBrand(b)} className="border border-gray-200 rounded-2xl p-4 text-left hover:shadow-md hover:border-gray-300 transition-all bg-white">
-                        {b.logo_url ? (
-                          <Image src={b.logo_url} alt={b.name} width={64} height={64} className="w-16 h-16 rounded-xl border border-gray-200 object-contain bg-gray-50 mb-3" />
-                        ) : (
-                          <div className="w-16 h-16 rounded-xl border border-gray-200 flex items-center justify-center text-2xl font-bold text-gray-400 mb-3 bg-gray-50">
-                            {b.name.charAt(0)}
-                          </div>
-                        )}
+                        <BrandLogo name={b.name} logoUrl={b.logo_url} size={64} className="mb-3" />
                         <p className="font-semibold text-sm text-[#292a24]">{b.name}</p>
                         <p className="text-xs text-gray-400 mb-2">{b.website}</p>
                         <StarRating rating={b.avg_rating || 0} size="xs" showScore />
@@ -614,11 +609,7 @@ function NewComplaintWizard() {
           <div className="text-center">
             {selectedBrand && (
               <div className="inline-flex items-center gap-3 bg-gray-50 rounded-xl px-4 py-3 mb-8 border">
-                {selectedBrand.logo_url ? (
-                  <Image src={selectedBrand.logo_url} alt={selectedBrand.name} width={40} height={40} className="w-10 h-10 rounded-lg object-contain bg-gray-50 border border-gray-100" />
-                ) : (
-                  <div className="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center font-bold text-gray-500">{selectedBrand.name.charAt(0)}</div>
-                )}
+                <BrandLogo name={selectedBrand.name} logoUrl={selectedBrand.logo_url} size={40} />
                 <div className="text-left"><p className="font-semibold text-sm">{selectedBrand.name}</p><p className="text-xs text-gray-400">{selectedBrand.website}</p></div>
               </div>
             )}
@@ -664,11 +655,7 @@ function NewComplaintWizard() {
             {selectedBrand && (
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
-                  {selectedBrand.logo_url ? (
-                    <Image src={selectedBrand.logo_url} alt={selectedBrand.name} width={40} height={40} className="w-10 h-10 rounded-lg object-contain bg-gray-50 border border-gray-100" />
-                  ) : (
-                    <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center font-bold text-gray-500">{selectedBrand.name.charAt(0)}</div>
-                  )}
+                  <BrandLogo name={selectedBrand.name} logoUrl={selectedBrand.logo_url} size={40} />
                   <p className="font-semibold text-sm">{selectedBrand.name}</p>
                 </div>
                 <StarRating rating={rating} size="sm" />
