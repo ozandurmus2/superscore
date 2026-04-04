@@ -11,6 +11,7 @@ import { SuperscoreBadge } from '@/components/brand/superscore-badge';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 import { BRAND_CATEGORIES } from '@/types';
 import { Search, Star, Building2 } from 'lucide-react';
+import Image from 'next/image';
 import type { Brand } from '@/types';
 
 export default function BrandsPage() {
@@ -85,9 +86,13 @@ export default function BrandsPage() {
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-14 h-14 rounded-full bg-[#1B1F3B] flex items-center justify-center text-white font-bold text-xl">
-                        {brand.name.charAt(0)}
-                      </div>
+                      {brand.logo_url ? (
+                        <Image src={brand.logo_url} alt={brand.name} width={56} height={56} className="w-14 h-14 rounded-full object-contain bg-gray-50 border border-gray-100" />
+                      ) : (
+                        <div className="w-14 h-14 rounded-full bg-[#1B1F3B] flex items-center justify-center text-white font-bold text-xl">
+                          {brand.name.charAt(0)}
+                        </div>
+                      )}
                       <div>
                         <h3 className="font-semibold text-lg">{brand.name}</h3>
                         <Badge variant="secondary">{brand.category}</Badge>

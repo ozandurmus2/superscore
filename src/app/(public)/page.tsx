@@ -153,9 +153,13 @@ export default async function HomePage() {
                     </p>
                     {/* Brand info */}
                     <div className="flex items-center gap-2 pt-3 border-t border-gray-100">
-                      <div className="w-7 h-7 rounded bg-gray-100 flex items-center justify-center text-[#1b1a1b] font-bold text-[10px] flex-shrink-0">
-                        {c.brand?.name?.charAt(0) || '?'}
-                      </div>
+                      {c.brand?.logo_url ? (
+                        <img src={c.brand.logo_url} alt={c.brand.name} className="w-7 h-7 rounded object-contain bg-gray-50 border border-gray-100 flex-shrink-0" />
+                      ) : (
+                        <div className="w-7 h-7 rounded bg-gray-100 flex items-center justify-center text-[#1b1a1b] font-bold text-[10px] flex-shrink-0">
+                          {c.brand?.name?.charAt(0) || '?'}
+                        </div>
+                      )}
                       <div className="min-w-0">
                         <p className="text-xs font-medium text-[#1b1a1b] truncate">{c.brand?.name}</p>
                         <p className="text-[10px] text-gray-400">{formatRelativeTime(c.created_at)}</p>

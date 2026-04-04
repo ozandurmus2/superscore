@@ -85,9 +85,13 @@ export default async function BrandProfilePage({ params }: { params: Promise<{ s
             {/* Left: Logo + Brand Info */}
             <div className="flex gap-5 flex-1">
               {/* Logo */}
-              <div className="w-[100px] h-[100px] rounded-2xl bg-[#f97316] flex items-center justify-center text-white text-5xl font-bold flex-shrink-0">
-                {b.name.charAt(0)}
-              </div>
+              {b.logo_url ? (
+                <Image src={b.logo_url} alt={b.name} width={100} height={100} className="w-[100px] h-[100px] rounded-2xl object-contain bg-gray-50 border border-gray-100 flex-shrink-0" />
+              ) : (
+                <div className="w-[100px] h-[100px] rounded-2xl bg-[#f97316] flex items-center justify-center text-white text-5xl font-bold flex-shrink-0">
+                  {b.name.charAt(0)}
+                </div>
+              )}
 
               {/* Info */}
               <div className="flex-1 min-w-0">
@@ -291,9 +295,13 @@ export default async function BrandProfilePage({ params }: { params: Promise<{ s
                   {(similarBrands as Brand[]).map((sb) => (
                     <Link key={sb.id} href={`/markalar/${sb.slug}`} className="flex-shrink-0 w-[200px]">
                       <div className="border border-gray-200 rounded-2xl p-4 hover:shadow-md transition-shadow">
-                        <div className="w-14 h-14 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center text-xl font-bold text-gray-400 mb-3">
-                          {sb.name.charAt(0)}
-                        </div>
+                        {sb.logo_url ? (
+                          <Image src={sb.logo_url} alt={sb.name} width={56} height={56} className="w-14 h-14 rounded-xl object-contain bg-gray-50 border border-gray-200 mb-3" />
+                        ) : (
+                          <div className="w-14 h-14 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center text-xl font-bold text-gray-400 mb-3">
+                            {sb.name.charAt(0)}
+                          </div>
+                        )}
                         <p className="font-semibold text-sm text-[#1b1a1b]">{sb.name}</p>
                         <p className="text-xs text-gray-400 mb-2">{sb.website}</p>
                         <StarRating rating={sb.avg_rating || 0} size="xs" showScore reviewCount={sb.total_complaints} />

@@ -15,6 +15,14 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'businessapp.b2b.trustpilot.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'www.google.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'stlnyesbyrzibxntkrrz.supabase.co',
+      },
     ],
   },
 };
