@@ -184,10 +184,10 @@ export default function Globe() {
     const starIconTexture = textureLoader.load('/logo/star_icon.png');
 
     interface StarSprite {
-      mesh: THREE.Sprite;
+      mesh: InstanceType<typeof THREE.Sprite>;
       life: number;
       maxLife: number;
-      velocity: THREE.Vector3;
+      velocity: InstanceType<typeof THREE.Vector3>;
       scale: number;
     }
 

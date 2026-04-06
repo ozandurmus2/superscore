@@ -1,8 +1,18 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { StarRating } from '@/components/ui/star-rating';
 import { HeroBanner } from '@/components/home/hero-banner';
 import { CategorySlider } from '@/components/home/category-slider';
+
+export const metadata: Metadata = {
+  title: 'Superscore - Tüketici Şikayet ve Değerlendirme Platformu',
+  description:
+    'Markaları değerlendirin, şikayetlerinizi yazın, tüketici deneyimlerini okuyun. 15.000+ marka hakkında gerçek kullanıcı yorumları.',
+  alternates: {
+    canonical: 'https://superscore.com.tr',
+  },
+};
 import { BestInCategory } from '@/components/home/best-in-category';
 import { HowItWorksFlow } from '@/components/home/how-it-works-flow';
 import { BusinessCTA } from '@/components/home/business-cta';

@@ -1,6 +1,16 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Search } from 'lucide-react';
+
+export const metadata: Metadata = {
+  title: 'Kategoriler - Marka Şikayetleri ve Değerlendirmeleri',
+  description:
+    'E-ticaret, bankacılık, telekomünikasyon, kargo ve daha fazla kategoride marka şikayetleri ve değerlendirmeleri. Sektöre göre markaları keşfedin.',
+  alternates: {
+    canonical: 'https://superscore.com.tr/kategoriler',
+  },
+};
 
 const CATEGORIES = [
   {

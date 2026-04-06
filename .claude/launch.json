@@ -3,9 +3,10 @@
   "configurations": [
     {
       "name": "dev",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
-      "port": 3000
+      "runtimeExecutable": "/bin/bash",
+      "runtimeArgs": ["/Users/ossan/Desktop/superscore/scripts/dev.sh"],
+      "port": 3000,
+      "autoPort": false
     }
   ]
 }

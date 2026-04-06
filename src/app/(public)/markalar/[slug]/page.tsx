@@ -11,6 +11,52 @@ import { BrandNoticeBar } from '@/components/brand/brand-notice-bar';
 import { BrandReviewsList } from '@/components/brand/brand-reviews-list';
 import { BrandLogo } from '@/components/brand/brand-logo';
 import type { Brand, Review } from '@/types';
+import type { Metadata } from 'next';
+
+const SITE_URL = 'https://superscore.com.tr';
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const supabase = await createClient();
+  const { data: brand } = await supabase.from('brands').select('name, category, avg_rating, review_count, logo_url').eq('slug', slug).single();
+
+  if (!brand) {
+    return { title: 'Marka Bulunamadı' };
+  }
+
+  const title = `${brand.name} Şikayetleri ve Değerlendirmeleri`;
+  const rating = brand.avg_rating ? Number(brand.avg_rating).toFixed(1) : null;
+  const reviewCount = brand.review_count || 0;
+  const description = rating
+    ? `${brand.name} hakkında ${reviewCount} tüketici değerlendirmesi. Superscore puanı: ${rating}/5. ${brand.name} şikayetlerini okuyun, deneyiminizi paylaşın.`
+    : `${brand.name} hakkında tüketici şikayetleri ve değerlendirmeleri. ${brand.name} şikayetlerini okuyun, deneyiminizi paylaşın.`;
+
+  return {
+    title,
+    description,
+    keywords: [
+      `${brand.name} şikayet`, `${brand.name} değerlendirme`, `${brand.name} yorum`,
+      `${brand.name} superscore`, `${brand.name} müşteri yorumları`,
+      brand.category || '', 'şikayet', 'değerlendirme',
+    ].filter(Boolean),
+    openGraph: {
+      title: `${brand.name} Şikayetleri ve Değerlendirmeleri | Superscore`,
+      description,
+      url: `${SITE_URL}/markalar/${slug}`,
+      siteName: 'Superscore',
+      type: 'website',
+      locale: 'tr_TR',
+    },
+    twitter: {
+      card: 'summary',
+      title: `${brand.name} | Superscore`,
+      description,
+    },
+    alternates: {
+      canonical: `${SITE_URL}/markalar/${slug}`,
+    },
+  };
+}
 
 export default async function BrandProfilePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -58,8 +104,43 @@ export default async function BrandProfilePage({ params }: { params: Promise<{ s
     return 'Kötü';
   }
 
+  // JSON-LD Structured Data
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: b.name,
+    url: b.website ? `https://${b.website}` : `${SITE_URL}/markalar/${slug}`,
+    ...(b.logo_url && { logo: b.logo_url }),
+    aggregateRating: totalReviews > 0 ? {
+      '@type': 'AggregateRating',
+      ratingValue: avgRating.toFixed(1),
+      bestRating: '5',
+      worstRating: '1',
+      reviewCount: totalReviews,
+    } : undefined,
+  };
+
+  const breadcrumbLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Ana Sayfa', item: SITE_URL },
+      { '@type': 'ListItem', position: 2, name: 'Kategoriler', item: `${SITE_URL}/kategoriler` },
+      { '@type': 'ListItem', position: 3, name: b.category, item: `${SITE_URL}/kategoriler/${b.category}` },
+      { '@type': 'ListItem', position: 4, name: b.name, item: `${SITE_URL}/markalar/${slug}` },
+    ],
+  };
+
   return (
     <div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+      />
       {/* Breadcrumb */}
       <div className="border-b border-gray-200 bg-white">
         <div className="container mx-auto px-4 py-3">
