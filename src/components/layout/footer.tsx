@@ -23,9 +23,9 @@ export function Footer() {
             <div>
               <h4 className="text-[#c0bec2] text-base font-medium mb-5">Hakkımızda</h4>
               <ul className="space-y-3">
-                <FooterLink href="/nasil-calisir">Hakkımızda</FooterLink>
+                <FooterLink href="/hakkimizda">Hakkımızda</FooterLink>
                 <FooterLink href="#">Kariyer</FooterLink>
-                <FooterLink href="#">İletişim</FooterLink>
+                <FooterLink href="/iletisim">İletişim</FooterLink>
                 <FooterLink href="#">Blog</FooterLink>
                 <FooterLink href="/nasil-calisir">Nasıl Çalışır</FooterLink>
                 <FooterLink href="#">Güven Raporu</FooterLink>
@@ -83,11 +83,11 @@ export function Footer() {
           <div className="border-t border-white/10 pt-6">
             <div className="flex flex-wrap gap-4 md:gap-6 mb-4">
               <Link href="#" className="text-xs text-[#c0bec2] hover:text-white transition-colors">Yasal</Link>
-              <Link href="#" className="text-xs text-[#c0bec2] hover:text-white transition-colors">Gizlilik Politikası</Link>
-              <Link href="#" className="text-xs text-[#c0bec2] hover:text-white transition-colors">Kullanım Şartları</Link>
+              <Link href="/gizlilik" className="text-xs text-[#c0bec2] hover:text-white transition-colors">Gizlilik Politikası</Link>
+              <Link href="/kullanim-sartlari" className="text-xs text-[#c0bec2] hover:text-white transition-colors">Kullanım Şartları</Link>
               <Link href="#" className="text-xs text-[#c0bec2] hover:text-white transition-colors">Değerlendirme Kuralları</Link>
               <Link href="#" className="text-xs text-[#c0bec2] hover:text-white transition-colors">Sistem Durumu</Link>
-              <Link href="#" className="text-xs text-[#c0bec2] hover:text-white transition-colors">Çerez Tercihleri</Link>
+              <Link href="/cerez-politikasi" className="text-xs text-[#c0bec2] hover:text-white transition-colors">Çerez Tercihleri</Link>
             </div>
             <p className="text-xs text-[#c0bec2]/60">© 2026 Superscore, Inc. Tüm hakları saklıdır.</p>
           </div>
