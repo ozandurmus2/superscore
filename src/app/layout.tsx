@@ -5,6 +5,10 @@ const SITE_URL = 'https://superscore.com.tr';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
+  icons: {
+    icon: '/favicon.ico',
+    apple: '/apple-icon.png',
+  },
   title: {
     default: 'Superscore - Tüketici Şikayet ve Değerlendirme Platformu',
     template: '%s | Superscore',
